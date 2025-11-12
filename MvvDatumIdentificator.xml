@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MvvDatumIdentificator>
+  <MvvDatumIdentificator>
+    <TypeDocCode>01</TypeDocCode>
+    <NumDoc>№ 12345/АБ</NumDoc>
+    <SerDoc>Тестовое значение для SerDoc</SerDoc>
+    <DateDoc>2025-11-11</DateDoc>
+    <CodeDep>Тестовое значение для CodeDep</CodeDep>
+    <IssuedDoc>Тестовое значение для IssuedDoc</IssuedDoc>
+    <FioDoc>Иванов Сергей Николаевич</FioDoc>
+    <BirthDate>2025-11-11</BirthDate>
+    <BirthPlace>г. Москва, ул. Пушкина, д.10</BirthPlace>
+  </MvvDatumIdentificator>
+</MvvDatumIdentificator>

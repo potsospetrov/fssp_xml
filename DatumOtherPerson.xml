@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DatumOtherPerson>
+  <DatumOtherPerson>
+    <EnttFio>Иванов Сергей Николаевич</EnttFio>
+    <EnttAddress>г. Москва, ул. Пушкина, д.10</EnttAddress>
+    <EnttGender>1</EnttGender>
+    <EnttBorndate>2025-11-11</EnttBorndate>
+    <EnttBirthPlace>г. Москва, ул. Пушкина, д.10</EnttBirthPlace>
+  </DatumOtherPerson>
+</DatumOtherPerson>

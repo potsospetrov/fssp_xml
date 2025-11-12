@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SendList>
+  <SendList>
+    <Receiver>+7 (495) 123-45-67</Receiver>
+    <ReceiverAddrType>EMAIL</ReceiverAddrType>
+    <ReceiverAddr>+7 (495) 123-45-67</ReceiverAddr>
+  </SendList>
+</SendList>

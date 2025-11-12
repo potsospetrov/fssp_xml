@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<IP>
+  <IP>
+    <InternalKey>Тестовое значение для InternalKey</InternalKey>
+    <IdExternalKey>Тестовое значение для IdExternalKey</IdExternalKey>
+    <IPNo>№ 12345/АБ</IPNo>
+    <IPRiseDate>2025-11-11</IPRiseDate>
+    <DivVksp>00885</DivVksp>
+    <IDType>1</IDType>
+    <IDDocNo>№ 12345/АБ</IDDocNo>
+    <IDDocDate>2025-11-11</IDDocDate>
+    <IdDebtText>Тестовое значение для IdDebtText</IdDebtText>
+    <DbtrName>Иванов Сергей Николаевич</DbtrName>
+    <IdCrdrName>+7 (495) 123-45-67</IdCrdrName>
+    <IdCourt>5173725</IdCourt>
+    <IdCourtDiv>Тестовое значение для IdCourtDiv</IdCourtDiv>
+    <IdCourtName>ООО "Альфа"</IdCourtName>
+    <IdDebtCls>1020000</IdDebtCls>
+    <IdDebtSum>25430.50</IdDebtSum>
+    <IpRestDebtsum>25430.50</IpRestDebtsum>
+    <IpRestOthersum>25430.50</IpRestOthersum>
+  </IP>
+</IP>

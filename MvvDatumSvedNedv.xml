@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MvvDatumSvedNedv>
+  <MvvDatumSvedNedv>
+    <invNNedv>№ 12345/АБ</invNNedv>
+    <nFloor>№ 12345/АБ</nFloor>
+    <NaimNedv>Тестовое значение для NaimNedv</NaimNedv>
+    <sNedv>Тестовое значение для sNedv</sNedv>
+    <kadastrN>№ 12345/АБ</kadastrN>
+    <AdresNedv>г. Москва, ул. Пушкина, д.10</AdresNedv>
+    <literN>Тестовое значение для literN</literN>
+    <floor>Тестовое значение для floor</floor>
+  </MvvDatumSvedNedv>
+</MvvDatumSvedNedv>

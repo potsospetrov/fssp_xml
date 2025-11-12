@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MvvDatumAvailabilityAcc>
+  <MvvDatumAvailabilityAcc>
+    <Acc>Тестовое значение для Acc</Acc>
+    <CurrencyCode>Тестовое значение для CurrencyCode</CurrencyCode>
+    <BicBank>524684100</BicBank>
+    <Summa>25430.50</Summa>
+    <PersonalAcc>Тестовое значение для PersonalAcc</PersonalAcc>
+    <DeptCode>Тестовое значение для DeptCode</DeptCode>
+  </MvvDatumAvailabilityAcc>
+</MvvDatumAvailabilityAcc>

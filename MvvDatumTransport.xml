@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MvvDatumTransport>
+  <MvvDatumTransport>
+    <Producer>Тестовое значение для Producer</Producer>
+    <Model>Тестовое значение для Model</Model>
+    <Engine>№ 12345/АБ</Engine>
+    <Color>Тестовое значение для Color</Color>
+    <RegNo>Арбитражный суд г. Москвы</RegNo>
+    <Vin>Тестовое значение для Vin</Vin>
+    <MadeYear>Тестовое значение для MadeYear</MadeYear>
+    <ChassisNumber>№ 12345/АБ</ChassisNumber>
+    <BodyNumber>№ 12345/АБ</BodyNumber>
+    <DeptCode>Тестовое значение для DeptCode</DeptCode>
+  </MvvDatumTransport>
+</MvvDatumTransport>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<IdPaymentPropertiesOIp>
+  <IdPaymentPropertiesOIp>
+    <RecipientName>+7 (495) 123-45-67</RecipientName>
+    <RecipientOktmo>82968340</RecipientOktmo>
+    <RecipientInn>8</RecipientInn>
+    <RecipientKpp>1</RecipientKpp>
+    <RecipientAccNumber>+7 (495) 123-45-67</RecipientAccNumber>
+    <RecipientBankCorAcc>+7 (495) 123-45-67</RecipientBankCorAcc>
+    <RecipientBankName>+7 (495) 123-45-67</RecipientBankName>
+    <RecipientBic>735407103</RecipientBic>
+    <Amount>25430.50</Amount>
+    <UnifoCode>Тестовое значение для UnifoCode</UnifoCode>
+    <KBK>Тестовое значение для KBK</KBK>
+    <TypePl>+7 (495) 123-45-67</TypePl>
+    <OsnPl>+7 (495) 123-45-67</OsnPl>
+    <NalPer>+7 (495) 123-45-67</NalPer>
+    <PaymentCardNumber>№ 12345/АБ</PaymentCardNumber>
+  </IdPaymentPropertiesOIp>
+</IdPaymentPropertiesOIp>
