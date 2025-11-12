@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OIp>
+	<OIp>
+		<Id>Тестовое значение для Id</Id>
+		<DocType>O_ACT_TRANSFER_IP</DocType>
+		<DocName>Иванов Сергей Николаевич</DocName>
+		<Barcode>Тестовое значение для Barcode</Barcode>
+		<DivVksp>84548</DivVksp>
+		<DivName>Иванов Сергей Николаевич</DivName>
+		<DivCity>Тестовое значение для DivCity</DivCity>
+		<DivAdr>г. Москва, ул. Пушкина, д.10</DivAdr>
+		<DocDate>2025-11-11</DocDate>
+		<AdjudicationText>Тестовое значение для AdjudicationText</AdjudicationText>
+		<ResolutionText>Тестовое значение для ResolutionText</ResolutionText>
+		<IsFSSP>Тестовое значение для IsFSSP</IsFSSP>
+		<FioSign>Иванов Сергей Николаевич</FioSign>
+		<OrganSignPostCode>Тестовое значение для OrganSignPostCode</OrganSignPostCode>
+		<SpecialGradesSign>Тестовое значение для SpecialGradesSign</SpecialGradesSign>
+		<OrganSignPost>Тестовое значение для OrganSignPost</OrganSignPost>
+		<IsOrder>Тестовое значение для IsOrder</IsOrder>
+		<SvodQuantity>+7 (495) 123-45-67</SvodQuantity>
+		<ArrActDate>2025-11-11</ArrActDate>
+		<DebtorType>1</DebtorType>
+		<DbtrName>Иванов Сергей Николаевич</DbtrName>
+		<DbtrAdr>г. Москва, ул. Пушкина, д.10</DbtrAdr>
+		<idDbtrBorn>2025-11-11</idDbtrBorn>
+		<IdDbtrBornadr>2025-11-11</IdDbtrBornadr>
+		<DbtrInn>6</DbtrInn>
+		<DbtrKpp>8</DbtrKpp>
+		<IdDbtrOgrn>301993060797</IdDbtrOgrn>
+		<IdDbtrSNILS>Тестовое значение для IdDbtrSNILS</IdDbtrSNILS>
+		<IdDbtrUIP>5234392401109</IdDbtrUIP>
+		<IdCourtName>Иванов Сергей Николаевич</IdCourtName>
+		<IdCourtAdr>г. Москва, ул. Пушкина, д.10</IdCourtAdr>
+		<IdCourt>5533535</IdCourt>
+		<IpRisepristName>Иванов Сергей Николаевич</IpRisepristName>
+		<Spi>Тестовое значение для Spi</Spi>
+		<SpiSignPostCode>Тестовое значение для SpiSignPostCode</SpiSignPostCode>
+		<SpiSignPost>Тестовое значение для SpiSignPost</SpiSignPost>
+		<IpNo>№ 12345/АБ</IpNo>
+		<IpId>Тестовое значение для IpId</IpId>
+		<IpRiseDate>2025-11-11</IpRiseDate>
+		<IpRestDebtsum>25430.50</IpRestDebtsum>
+		<IpRestOthersum>25430.50</IpRestOthersum>
+		<IdType>1</IdType>
+		<IdDocNo>№ 12345/АБ</IdDocNo>
+		<IdDocDate>2025-11-11</IdDocDate>
+		<IdDeloNo>№ 12345/АБ</IdDeloNo>
+		<IdDeloDate>2025-11-11</IdDeloDate>
+		<IdDebtCls>1020000</IdDebtCls>
+		<IdDebtSum>25430.50</IdDebtSum>
+		<DebtsumCurrencyCode>25430.50</DebtsumCurrencyCode>
+		<TotalArrestDebtSum>25430.50</TotalArrestDebtSum>
+		<IdDebtText>Тестовое значение для IdDebtText</IdDebtText>
+		<IdCrdrName>+7 (495) 123-45-67</IdCrdrName>
+		<IdCrdrAdr>+7 (495) 123-45-67</IdCrdrAdr>
+		<Incomepart>25430.50</Incomepart>
+		<IncomepartName>1</IncomepartName>
+		<SearchType>Тестовое значение для SearchType</SearchType>
+		<IdRD>№ 12345/АБ</IdRD>
+		<IDExternalKey>Тестовое значение для IDExternalKey</IDExternalKey>
+		<IDSum>+7 (495) 123-45-67</IDSum>
+		<LimitSum>25430.50</LimitSum>
+		<LimitDate>2025-11-11</LimitDate>
+		<Procent>Тестовое значение для Procent</Procent>
+		<EndDate>2025-11-11</EndDate>
+		<SDGroupPopulation>1</SDGroupPopulation>
+		<OrderLivingWageAcc>Тестовое значение для OrderLivingWageAcc</OrderLivingWageAcc>
+		<BankName>Иванов Сергей Николаевич</BankName>
+		<BankBIK>644404116</BankBIK>
+		<SaveActDate>2025-11-11</SaveActDate>
+		<SaveActOrgan>ООО "Альфа"</SaveActOrgan>
+		<Region>Тестовое значение для Region</Region>
+		<ArbitraryXmlData>Тестовое значение для ArbitraryXmlData</ArbitraryXmlData>
+		<fssp:IpPropertyListO>
+			<IpPropertyListO>
+				<PropertyId>Тестовое значение для PropertyId</PropertyId>
+				<PropertyName>Иванов Сергей Николаевич</PropertyName>
+				<PropertyAddress>г. Москва, ул. Пушкина, д.10</PropertyAddress>
+				<IsDeposit>Тестовое значение для IsDeposit</IsDeposit>
+				<ArestQueue>Тестовое значение для ArestQueue</ArestQueue>
+				<PropertyLot>№ 12345/АБ</PropertyLot>
+				<PropertyQuantity>Тестовое значение для PropertyQuantity</PropertyQuantity>
+				<OkeiId>Тестовое значение для OkeiId</OkeiId>
+				<PropertyCurrentPrice>Тестовое значение для PropertyCurrentPrice</PropertyCurrentPrice>
+				<PropertyCost>Тестовое значение для PropertyCost</PropertyCost>
+				<PropertyEstimatePrice>Тестовое значение для PropertyEstimatePrice</PropertyEstimatePrice>
+				<PropertyEstimateCost>Тестовое значение для PropertyEstimateCost</PropertyEstimateCost>
+				<PropertyRealizedPrice>Тестовое значение для PropertyRealizedPrice</PropertyRealizedPrice>
+				<PropertyRealizedCost>Тестовое значение для PropertyRealizedCost</PropertyRealizedCost>
+				<PropertyReducedPrice>Тестовое значение для PropertyReducedPrice</PropertyReducedPrice>
+				<PropertyReducedCost>Тестовое значение для PropertyReducedCost</PropertyReducedCost>
+				<PropertyNotSoldPrice>Тестовое значение для PropertyNotSoldPrice</PropertyNotSoldPrice>
+				<PropertyTNotSoldCost>Тестовое значение для PropertyTNotSoldCost</PropertyTNotSoldCost>
+				<PropertyToCrdrPrice>+7 (495) 123-45-67</PropertyToCrdrPrice>
+				<PropertyToCredCost>+7 (495) 123-45-67</PropertyToCredCost>
+				<Estimate>Тестовое значение для Estimate</Estimate>
+				<EstimateINN>9</EstimateINN>
+				<EstimateKPP>2</EstimateKPP>
+				<EstimateDate>2025-11-11</EstimateDate>
+				<EstimateSPIDate>2025-11-11</EstimateSPIDate>
+				<fssp:MvvDatumSvedNedv>
+					<MvvDatumSvedNedv>
+						<invNNedv>№ 12345/АБ</invNNedv>
+						<nFloor>№ 12345/АБ</nFloor>
+						<NaimNedv>Тестовое значение для NaimNedv</NaimNedv>
+						<sNedv>Тестовое значение для sNedv</sNedv>
+						<kadastrN>№ 12345/АБ</kadastrN>
+						<AdresNedv>г. Москва, ул. Пушкина, д.10</AdresNedv>
+						<literN>Тестовое значение для literN</literN>
+						<floor>Тестовое значение для floor</floor>
+					</MvvDatumSvedNedv>
+				</fssp:MvvDatumSvedNedv>
+			</IpPropertyListO>
+		</fssp:IpPropertyListO>
+		<fssp:MvvDatumSvedNedv>
+			<MvvDatumSvedNedv>
+				<invNNedv>№ 12345/АБ</invNNedv>
+				<nFloor>№ 12345/АБ</nFloor>
+				<NaimNedv>Тестовое значение для NaimNedv</NaimNedv>
+				<sNedv>Тестовое значение для sNedv</sNedv>
+				<kadastrN>№ 12345/АБ</kadastrN>
+				<AdresNedv>г. Москва, ул. Пушкина, д.10</AdresNedv>
+				<literN>Тестовое значение для literN</literN>
+				<floor>Тестовое значение для floor</floor>
+			</MvvDatumSvedNedv>
+		</fssp:MvvDatumSvedNedv>
+		<fssp:MvvDatumTransport>
+			<MvvDatumTransport>
+				<Producer>Тестовое значение для Producer</Producer>
+				<Model>Тестовое значение для Model</Model>
+				<Engine>№ 12345/АБ</Engine>
+				<Color>Тестовое значение для Color</Color>
+				<RegNo>Арбитражный суд г. Москвы</RegNo>
+				<Vin>Тестовое значение для Vin</Vin>
+				<MadeYear>Тестовое значение для MadeYear</MadeYear>
+				<ChassisNumber>№ 12345/АБ</ChassisNumber>
+				<BodyNumber>№ 12345/АБ</BodyNumber>
+				<DeptCode>Тестовое значение для DeptCode</DeptCode>
+			</MvvDatumTransport>
+		</fssp:MvvDatumTransport>
+		<fssp:MvvDatumAvailabilityAcc>
+			<MvvDatumAvailabilityAcc>
+				<Acc>Тестовое значение для Acc</Acc>
+				<CurrencyCode>Тестовое значение для CurrencyCode</CurrencyCode>
+				<BicBank>176724448</BicBank>
+				<Summa>25430.50</Summa>
+				<PersonalAcc>Тестовое значение для PersonalAcc</PersonalAcc>
+				<DeptCode>Тестовое значение для DeptCode</DeptCode>
+			</MvvDatumAvailabilityAcc>
+		</fssp:MvvDatumAvailabilityAcc>
+		<fssp:MvvDatumAvailibilityAccDepo>
+			<MvvDatumAvailibilityAccDepo>
+				<StrAcc>Тестовое значение для StrAcc</StrAcc>
+				<BicBank>392506761</BicBank>
+				<DeptCode>Тестовое значение для DeptCode</DeptCode>
+			</MvvDatumAvailibilityAccDepo>
+		</fssp:MvvDatumAvailibilityAccDepo>
+		<fssp:MvvDatumIdentificator>
+			<MvvDatumIdentificator>
+				<TypeDocCode>01</TypeDocCode>
+				<NumDoc>№ 12345/АБ</NumDoc>
+				<SerDoc>Тестовое значение для SerDoc</SerDoc>
+				<DateDoc>2025-11-11</DateDoc>
+				<CodeDep>Тестовое значение для CodeDep</CodeDep>
+				<IssuedDoc>Тестовое значение для IssuedDoc</IssuedDoc>
+				<FioDoc>Иванов Сергей Николаевич</FioDoc>
+				<BirthDate>2025-11-11</BirthDate>
+				<BirthPlace>г. Москва, ул. Пушкина, д.10</BirthPlace>
+			</MvvDatumIdentificator>
+		</fssp:MvvDatumIdentificator>
+		<fssp:DatumOtherPerson>
+			<DatumOtherPerson>
+				<EnttFio>Иванов Сергей Николаевич</EnttFio>
+				<EnttAddress>г. Москва, ул. Пушкина, д.10</EnttAddress>
+				<EnttGender>1</EnttGender>
+				<EnttBorndate>2025-11-11</EnttBorndate>
+				<EnttBirthPlace>г. Москва, ул. Пушкина, д.10</EnttBirthPlace>
+			</DatumOtherPerson>
+		</fssp:DatumOtherPerson>
+		<fssp:OIpNpaActsOIp>
+			<OIpNpaActsOIp>
+				<NPAType>1</NPAType>
+				<NpaCaption>Тестовое значение для NpaCaption</NpaCaption>
+				<fssp:OIpNpaArticle>
+					<OIpNpaArticle>
+						<NpaArticle>№ 12345/АБ</NpaArticle>
+						<NpaArticleType>Тестовое значение для NpaArticleType</NpaArticleType>
+						<IsMain>Тестовое значение для IsMain</IsMain>
+						<fssp:OIpNpaArticle>Тестовое значение для fssp:OIpNpaArticle</fssp:OIpNpaArticle>
+					</OIpNpaArticle>
+				</fssp:OIpNpaArticle>
+			</OIpNpaActsOIp>
+		</fssp:OIpNpaActsOIp>
+		<fssp:OIpActWarningsOIp>
+			<OIpActWarningsOIp>
+				<WarningType>1</WarningType>
+				<WarningCode>Тестовое значение для WarningCode</WarningCode>
+				<WarningText>Тестовое значение для WarningText</WarningText>
+				<fssp:OIpNpaActs>
+					<OIpNpaActs>
+						<NPAType>1</NPAType>
+						<NpaCaption>Тестовое значение для NpaCaption</NpaCaption>
+						<fssp:OIpNpaArticle>
+							<OIpNpaArticle>
+								<NpaArticle>№ 12345/АБ</NpaArticle>
+								<NpaArticleType>Тестовое значение для NpaArticleType</NpaArticleType>
+								<IsMain>Тестовое значение для IsMain</IsMain>
+								<fssp:OIpNpaArticle>Тестовое значение для fssp:OIpNpaArticle</fssp:OIpNpaArticle>
+							</OIpNpaArticle>
+						</fssp:OIpNpaArticle>
+					</OIpNpaActs>
+				</fssp:OIpNpaActs>
+			</OIpActWarningsOIp>
+		</fssp:OIpActWarningsOIp>
+		<fssp:IdPaymentPropertiesOIp>
+			<IdPaymentPropertiesOIp>
+				<RecipientName>+7 (495) 123-45-67</RecipientName>
+				<RecipientOktmo>64899514</RecipientOktmo>
+				<RecipientInn>3</RecipientInn>
+				<RecipientKpp>6</RecipientKpp>
+				<RecipientAccNumber>+7 (495) 123-45-67</RecipientAccNumber>
+				<RecipientBankCorAcc>+7 (495) 123-45-67</RecipientBankCorAcc>
+				<RecipientBankName>+7 (495) 123-45-67</RecipientBankName>
+				<RecipientBic>850251365</RecipientBic>
+				<Amount>25430.50</Amount>
+				<UnifoCode>Тестовое значение для UnifoCode</UnifoCode>
+				<KBK>Тестовое значение для KBK</KBK>
+				<TypePl>+7 (495) 123-45-67</TypePl>
+				<OsnPl>+7 (495) 123-45-67</OsnPl>
+				<NalPer>+7 (495) 123-45-67</NalPer>
+				<PaymentCardNumber>№ 12345/АБ</PaymentCardNumber>
+			</IdPaymentPropertiesOIp>
+		</fssp:IdPaymentPropertiesOIp>
+		<fssp:SendList>
+			<SendList>
+				<Receiver>+7 (495) 123-45-67</Receiver>
+				<ReceiverAddrType>EMAIL</ReceiverAddrType>
+				<ReceiverAddr>+7 (495) 123-45-67</ReceiverAddr>
+			</SendList>
+		</fssp:SendList>
+		<fssp:IP>
+			<IP>
+				<InternalKey>Тестовое значение для InternalKey</InternalKey>
+				<IdExternalKey>Тестовое значение для IdExternalKey</IdExternalKey>
+				<IPNo>№ 12345/АБ</IPNo>
+				<IPRiseDate>2025-11-11</IPRiseDate>
+				<DivVksp>90878</DivVksp>
+				<IDType>1</IDType>
+				<IDDocNo>№ 12345/АБ</IDDocNo>
+				<IDDocDate>2025-11-11</IDDocDate>
+				<IdDebtText>Тестовое значение для IdDebtText</IdDebtText>
+				<DbtrName>Иванов Сергей Николаевич</DbtrName>
+				<IdCrdrName>+7 (495) 123-45-67</IdCrdrName>
+				<IdCourt>7529466</IdCourt>
+				<IdCourtDiv>Тестовое значение для IdCourtDiv</IdCourtDiv>
+				<IdCourtName>ООО "Альфа"</IdCourtName>
+				<IdDebtCls>1020000</IdDebtCls>
+				<IdDebtSum>25430.50</IdDebtSum>
+				<IpRestDebtsum>25430.50</IpRestDebtsum>
+				<IpRestOthersum>25430.50</IpRestOthersum>
+			</IP>
+		</fssp:IP>
+		<fssp:IPDocsInfo>
+			<IPDocsInfo>
+				<InternalKey>Тестовое значение для InternalKey</InternalKey>
+				<DocDate>2025-11-11</DocDate>
+				<SPIFio>Иванов Сергей Николаевич</SPIFio>
+				<SPIPost>Тестовое значение для SPIPost</SPIPost>
+				<DocType>O_ACT_TRANSFER_IP</DocType>
+				<DocName>Иванов Сергей Николаевич</DocName>
+				<fssp:OIpNpaActs>
+					<OIpNpaActs>
+						<NPAType>1</NPAType>
+						<NpaCaption>Тестовое значение для NpaCaption</NpaCaption>
+						<fssp:OIpNpaArticle>
+							<OIpNpaArticle>
+								<NpaArticle>№ 12345/АБ</NpaArticle>
+								<NpaArticleType>Тестовое значение для NpaArticleType</NpaArticleType>
+								<IsMain>Тестовое значение для IsMain</IsMain>
+								<fssp:OIpNpaArticle>Тестовое значение для fssp:OIpNpaArticle</fssp:OIpNpaArticle>
+							</OIpNpaArticle>
+						</fssp:OIpNpaArticle>
+					</OIpNpaActs>
+				</fssp:OIpNpaActs>
+			</IPDocsInfo>
+		</fssp:IPDocsInfo>
+		<fssp:URLList>
+			<URLList>
+				<URL>г. Москва, ул. Пушкина, д.10</URL>
+			</URLList>
+		</fssp:URLList>
+		<fssp:Attachment>
+			<Attachment>
+				<DsContentType>0</DsContentType>
+				<DsFileName>Иванов Сергей Николаевич</DsFileName>
+				<DsDescription>Тестовое значение для DsDescription</DsDescription>
+				<DsDataDigest>Тестовое значение для DsDataDigest</DsDataDigest>
+			</Attachment>
+		</fssp:Attachment>
+	</OIp>
+</OIp>
