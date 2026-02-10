@@ -1,0 +1,29 @@
+| Элемент              | Тип              | Обязателен | Комментарий        |
+| -------------------- | ---------------- | ---------- | ------------------ |
+| `InternalKey`        | `DIdType`        | ✔          | Внутренний ID      |
+| `IdExternalKey`      | `string`         | ✖          | Внешний ключ       |
+| `IPNo`               | `DDocnumberType` | ✔          | Номер ИП           |
+| `IPRiseDate`         | `DDateType`      | ✔          | Дата возбуждения   |
+| `DivVksp`            | `string`         | ✔          | Подразделение ФССП |
+| `IDType`             | `integer`        | ✖          | Тип документа      |
+| `IDDocNo`            | `DDocnumberType` | ✖          | Номер документа    |
+| `IDDocDate`          | `DDateType`      | ✖          | Дата документа     |
+| `IdDebtText`         | `string`         | ✖          | Суть требований    |
+| `DbtrName`           | `string`         | ✖          | Должник            |
+| `IdCrdrName`         | `string`         | ✖          | Взыскатель         |
+| `IdCourt*`           | `string`         | ✖          | Судебные данные    |
+| `IdDebtCls`          | `DDebtCls`       | ✔          | Класс долга        |
+| `IdDebtSum`          | `MoneyType`      | ✖          | Общая сумма        |
+| `IDSum`              | `MoneyType`      | ✖          | Сумма по документу |
+| `Procent`            | `integer`        | ✖          | % удержаний        |
+| `EndDate`            | `DDateType`      | ✖          | Дата окончания     |
+| `SDGroupPopulation`  | `enum`           | ✖          | Соц-группа         |
+| `OrderLivingWageAcc` | `pattern`        | ✖          | Счет ПМ            |
+| `OIpNpaActsOIp`      | complex          | ✔          | Основание НПА      |
+| `OIpActWarningsOIp`  | complex          | ✔          | Предупреждение     |
+| `IpPropertyListO`    | list             | ✖          | Недвижимость       |
+| `IpTransportListO`   | list             | ✖          | ТС                 |
+| `IpBankAccountListO` | list             | ✖          | Банковские счета   |
+| `IpSecurityListO`    | list             | ✖          | ЦБ                 |
+| `IpShareListO`       | list             | ✖          | Доли               |
+| `IpIncomeListO`      | list             | ✖          | Доходы             |

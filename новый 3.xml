@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fssp:OIp xmlns:fssp="http://www.fssp.gov.ru/namespace/order_fssp/2022/1">
+
+    <!-- ================= ОСНОВНЫЕ ДАННЫЕ ================= -->
+
+    <fssp:InternalKey>9000000001</fssp:InternalKey>
+    <fssp:IdExternalKey>EXT-OIP-OVER-0001</fssp:IdExternalKey>
+
+    <fssp:IPNo>IP-2023-000999</fssp:IPNo>
+    <fssp:IPRiseDate>2023-02-15</fssp:IPRiseDate>
+
+    <fssp:DivVksp>77001</fssp:DivVksp>
+
+    <fssp:IDType>1</fssp:IDType>
+    <fssp:IDDocNo>DOC-2023-00015</fssp:IDDocNo>
+    <fssp:IDDocDate>2023-02-01</fssp:IDDocDate>
+
+    <fssp:IdDebtText>
+        Взыскание алиментов, задолженность за предыдущие периоды
+    </fssp:IdDebtText>
+
+    <fssp:DbtrName>Иванов Сергей Петрович</fssp:DbtrName>
+    <fssp:IdCrdrName>Иванова Мария Александровна</fssp:IdCrdrName>
+
+    <fssp:IdCourt>4528656</fssp:IdCourt>
+    <fssp:IdCourtDiv>003</fssp:IdCourtDiv>
+    <fssp:IdCourtName>
+        Мировой суд судебного участка №3 г. Москвы
+    </fssp:IdCourtName>
+
+    <fssp:IdDebtCls>1020000</fssp:IdDebtCls>
+
+    <fssp:IdDebtSum>240000.00</fssp:IdDebtSum>
+    <fssp:IDSum>180000.00</fssp:IDSum>
+
+    <fssp:Procent>50</fssp:Procent>
+    <fssp:EndDate>2025-12-31</fssp:EndDate>
+
+    <fssp:SDGroupPopulation>TRUD</fssp:SDGroupPopulation>
+
+    <fssp:OrderLivingWageAcc>40817810000009876543</fssp:OrderLivingWageAcc>
+    <fssp:BankName>ПАО СБЕРБАНК</fssp:BankName>
+    <fssp:BankBIK>044525225</fssp:BankBIK>
+    <fssp:Region>77</fssp:Region>
+
+    <!-- ================= НОРМАТИВНЫЕ ОСНОВАНИЯ ================= -->
+
+    <fssp:OIpNpaActsOIp>
+        <fssp:NpaName>
+            Федеральный закон №229-ФЗ «Об исполнительном производстве»
+        </fssp:NpaName>
+        <fssp:NpaArticle>98</fssp:NpaArticle>
+    </fssp:OIpNpaActsOIp>
+
+    <!-- ================= ПРЕДУПРЕЖДЕНИЯ ================= -->
+
+    <fssp:OIpActWarningsOIp>
+        <fssp:WarningType>2</fssp:WarningType>
+        <fssp:WarningText>
+            Постановление может быть обжаловано в течение 10 дней
+        </fssp:WarningText>
+    </fssp:OIpActWarningsOIp>
+
+    <!-- ================= ИМУЩЕСТВО ================= -->
+
+    <fssp:IpPropertyListO>
+        <fssp:PropertyType>Квартира</fssp:PropertyType>
+        <fssp:PropertyAddress>г. Москва, ул. Ленина, д.10</fssp:PropertyAddress>
+        <fssp:PropertyCost>7500000.00</fssp:PropertyCost>
+    </fssp:IpPropertyListO>
+
+    <!-- ================= ТРАНСПОРТ ================= -->
+
+    <fssp:IpTransportListO>
+        <fssp:TransportType>Автомобиль</fssp:TransportType>
+        <fssp:Brand>TOYOTA</fssp:Brand>
+        <fssp:Model>CAMRY</fssp:Model>
+        <fssp:RegNumber>А123ВС77</fssp:RegNumber>
+    </fssp:IpTransportListO>
+
+    <!-- ================= БАНКОВСКИЕ СЧЕТА ================= -->
+
+    <fssp:IpBankAccountListO>
+        <fssp:AccountNumber>40817810000001234567</fssp:AccountNumber>
+        <fssp:BankName>ПАО СБЕРБАНК</fssp:BankName>
+        <fssp:BIK>044525225</fssp:BIK>
+    </fssp:IpBankAccountListO>
+
+    <!-- ================= ЦЕННЫЕ БУМАГИ ================= -->
+
+    <fssp:IpSecurityListO>
+        <fssp:SecurityType>Акции</fssp:SecurityType>
+        <fssp:Issuer>ПАО Газпром</fssp:Issuer>
+        <fssp:Quantity>100</fssp:Quantity>
+    </fssp:IpSecurityListO>
+
+    <!-- ================= ДОЛИ В КОМПАНИЯХ ================= -->
+
+    <fssp:IpShareListO>
+        <fssp:OrganizationName>ООО Ромашка</fssp:OrganizationName>
+        <fssp:SharePercent>25</fssp:SharePercent>
+    </fssp:IpShareListO>
+
+    <!-- ================= ДОХОДЫ ================= -->
+
+    <fssp:IpIncomeListO>
+        <fssp:IncomeType>Заработная плата</fssp:IncomeType>
+        <fssp:IncomeAmount>120000.00</fssp:IncomeAmount>
+    </fssp:IpIncomeListO>
+
+</fssp:OIp>

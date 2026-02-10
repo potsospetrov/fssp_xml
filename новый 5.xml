@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fssp:OIp
+    xmlns:fssp="http://www.fssp.gov.ru/namespace/order_fssp/2022/1">
+
+    <!-- Идентификаторы -->
+    <fssp:InternalKey>5000000001</fssp:InternalKey>
+    <fssp:IdExternalKey>EXT-OIP-000001</fssp:IdExternalKey>
+
+    <!-- Исполнительное производство -->
+    <fssp:IPNo>IP-2022-000789</fssp:IPNo>
+    <fssp:IPRiseDate>2022-04-12</fssp:IPRiseDate>
+
+    <!-- Подразделение ФССП -->
+    <fssp:DivVksp>77001</fssp:DivVksp>
+
+    <!-- Исполнительный документ -->
+    <fssp:IDType>1</fssp:IDType>
+    <fssp:IDDocNo>DOC-2022-00045</fssp:IDDocNo>
+    <fssp:IDDocDate>2022-03-20</fssp:IDDocDate>
+
+    <!-- Суть требований -->
+    <fssp:IdDebtText>
+        Взыскание алиментов на содержание несовершеннолетнего ребенка
+    </fssp:IdDebtText>
+
+    <!-- Участники -->
+    <fssp:DbtrName>Иванов Сергей Петрович</fssp:DbtrName>
+    <fssp:IdCrdrName>Иванова Мария Александровна</fssp:IdCrdrName>
+
+    <!-- Суд -->
+    <fssp:IdCourt>4528656</fssp:IdCourt>
+    <fssp:IdCourtDiv>002</fssp:IdCourtDiv>
+    <fssp:IdCourtName>
+        Мировой суд судебного участка №2 г. Москвы
+    </fssp:IdCourtName>
+
+    <!-- Класс задолженности (xs:enumeration, length=7) -->
+    <fssp:IdDebtCls>1020000</fssp:IdDebtCls>
+
+    <!-- Финансовые показатели -->
+    <fssp:IdDebtSum>180000.00</fssp:IdDebtSum>
+    <fssp:IDSum>120000.00</fssp:IDSum>
+
+    <!-- Проценты удержания -->
+    <fssp:Procent>25</fssp:Procent>
+    <fssp:EndDate>2024-12-31</fssp:EndDate>
+
+    <!-- Социально-демографическая группа -->
+    <fssp:SDGroupPopulation>TRUD</fssp:SDGroupPopulation>
+
+    <!-- Счет для сохранения ПМ -->
+    <fssp:OrderLivingWageAcc>40817810000001234567</fssp:OrderLivingWageAcc>
+    <fssp:BankName>ПАО СБЕРБАНК</fssp:BankName>
+    <fssp:BankBIK>044525225</fssp:BankBIK>
+    <fssp:Region>77</fssp:Region>
+
+    <!-- ===== ОБЯЗАТЕЛЬНЫЕ БЛОКИ ===== -->
+
+    <!-- Основание постановления (minOccurs=1) -->
+    <fssp:OIpNpaActsOIp>
+        <fssp:NpaName>
+            Федеральный закон №229-ФЗ «Об исполнительном производстве»
+        </fssp:NpaName>
+        <fssp:NpaArticle>98</fssp:NpaArticle>
+    </fssp:OIpNpaActsOIp>
+
+    <!-- Предупреждения (minOccurs=1, должен быть тип = 2) -->
+    <fssp:OIpActWarningsOIp>
+        <fssp:WarningType>2</fssp:WarningType>
+        <fssp:WarningText>
+            Постановление может быть обжаловано в установленном законом порядке
+        </fssp:WarningText>
+    </fssp:OIpActWarningsOIp>
+
+</fssp:OIp>
