@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fssp:OIp
+    xmlns:fssp="http://www.fssp.gov.ru/namespace/order_fssp/2022/1">
+
+    <!-- Идентификатор -->
+    <fssp:Id>1000000000001</fssp:Id>
+
+    <!-- Тип документа (ENUM) -->
+    <fssp:DocType>O_IP_ACT_ARREST</fssp:DocType>
+
+    <!-- Наименование -->
+    <fssp:DocName>Постановление о наложении ареста</fssp:DocName>
+
+    <!-- Штрихкод -->
+    <fssp:Barcode>1234567890123456789012345</fssp:Barcode>
+
+    <!-- Код ВКСП -->
+    <fssp:DivVksp>77001</fssp:DivVksp>
+
+    <!-- Подразделение -->
+    <fssp:DivName>Отдел судебных приставов по Центральному району</fssp:DivName>
+    <fssp:DivCity>Москва</fssp:DivCity>
+    <fssp:DivAdr>125009, г. Москва, ул. Тверская, д. 1</fssp:DivAdr>
+
+    <!-- Документ -->
+    <fssp:DocDate>2024-03-15</fssp:DocDate>
+    <fssp:AdjudicationText>
+        Судебным актом установлена обязанность должника.
+    </fssp:AdjudicationText>
+    <fssp:ResolutionText>
+        Наложить арест на имущество должника.
+    </fssp:ResolutionText>
+
+    <!-- Подписант -->
+    <fssp:IsFSSP>true</fssp:IsFSSP>
+    <fssp:FioSign>Иванов Иван Иванович</fssp:FioSign>
+    <fssp:OrganSignPostCode>77001</fssp:OrganSignPostCode>
+    <fssp:SpecialGradesSign>капитан внутренней службы</fssp:SpecialGradesSign>
+    <fssp:OrganSignPost>Судебный пристав-исполнитель</fssp:OrganSignPost>
+
+    <!-- Признаки -->
+    <fssp:IsOrder>false</fssp:IsOrder>
+    <fssp:SvodQuantity>2</fssp:SvodQuantity>
+    <fssp:ArrActDate>2024-04-01</fssp:ArrActDate>
+
+    <!-- Должник -->
+    <fssp:DebtorType>1</fssp:DebtorType>
+    <fssp:DbtrName>Петров Пётр Петрович</fssp:DbtrName>
+    <fssp:DbtrAdr>109012, г. Москва, ул. Арбат, д. 10</fssp:DbtrAdr>
+
+</fssp:OIp>

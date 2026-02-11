@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OIp xmlns:fssp="http://www.fssp.gov.ru/namespace/order_fssp/2022/1">
+
+    <!-- Идентификация -->
+    <Id>1000000000001</Id>
+    <DocType>O_IP_ACT_ARREST</DocType>
+    <DocName>Постановление о наложении ареста</DocName>
+    <Barcode>1234567890123456789012345</Barcode>
+
+    <!-- Подразделение -->
+    <DivVksp>77001</DivVksp>
+    <DivName>ОСП по Центральному району</DivName>
+    <DivCity>Москва</DivCity>
+    <DivAdr>125009, г. Москва, ул. Тверская, д. 1</DivAdr>
+
+    <!-- Документ -->
+    <DocDate>2024-03-15</DocDate>
+    <AdjudicationText>
+        Судом установлена обязанность должника по исполнению требований.
+    </AdjudicationText>
+    <ResolutionText>
+        Наложить арест на денежные средства должника.
+    </ResolutionText>
+
+    <!-- Подписант -->
+    <IsFSSP>true</IsFSSP>
+    <FioSign>Иванов Иван Иванович</FioSign>
+    <OrganSignPostCode>77001</OrganSignPostCode>
+    <SpecialGradesSign>капитан внутренней службы</SpecialGradesSign>
+    <OrganSignPost>Судебный пристав-исполнитель</OrganSignPost>
+
+    <!-- Признаки -->
+    <IsOrder>false</IsOrder>
+    <SvodQuantity>2</SvodQuantity>
+    <ArrActDate>2024-04-01</ArrActDate>
+
+    <!-- Должник -->
+    <DebtorType>1</DebtorType>
+    <DbtrName>Петров Пётр Петрович</DbtrName>
+    <DbtrAdr>109012, г. Москва, ул. Арбат, д. 10</DbtrAdr>
+    <idDbtrBorn>1985-07-12</idDbtrBorn>
+    <IdDbtrBornadr>г. Москва</IdDbtrBornadr>
+    <DbtrInn>770123456789</DbtrInn>
+    <DbtrKpp>770101001</DbtrKpp>
+    <IdDbtrOgrn>1027700132195</IdDbtrOgrn>
+    <IdDbtrSNILS>11223344595</IdDbtrSNILS>
+    <IdDbtrUIP>12345678901234567890</IdDbtrUIP>
+
+    <!-- Суд -->
+    <IdCourtName>Тверской районный суд г. Москвы</IdCourtName>
+    <IdCourtAdr>125009, г. Москва, ул. Дмитровка, д. 15</IdCourtAdr>
+    <IdCourt>77001</IdCourt>
+
+    <!-- Исполнительное производство -->
+    <IpRisepristName>Иванов Сергей Николаевич</IpRisepristName>
+    <Spi>Иванов Сергей Николаевич</Spi>
+    <SpiSignPostCode>77001</SpiSignPostCode>
+    <SpiSignPost>Судебный пристав-исполнитель</SpiSignPost>
+    <IpNo>12345/24/77001-ИП</IpNo>
+    <IpId>987654321</IpId>
+    <IpRiseDate>2024-03-20</IpRiseDate>
+    <IpRestDebtsum>150000.50</IpRestDebtsum>
+    <IpRestOthersum>2500.00</IpRestOthersum>
+
+    <!-- Исполнительный документ -->
+    <IdType>01</IdType>
+    <IdDocNo>АБ-123456</IdDocNo>
+    <IdDocDate>2024-02-28</IdDocDate>
+    <IdDeloNo>2-3456/2024</IdDeloNo>
+    <IdDeloDate>2024-02-20</IdDeloDate>
+
+    <!-- Задолженность -->
+    <IdDebtCls>01</IdDebtCls>
+    <IdDebtSum>150000.50</IdDebtSum>
+    <DebtsumCurrencyCode>643</DebtsumCurrencyCode>
+    <TotalArrestDebtSum>50000.00</TotalArrestDebtSum>
+    <IdDebtText>Задолженность по договору займа</IdDebtText>
+    <IdCrdrName>ООО Финансовая компания</IdCrdrName>
+    <IdCrdrAdr>119019, г. Москва, ул. Новый Арбат, д. 21</IdCrdrAdr>
+
+    <!-- Удержания -->
+    <Incomepart>50</Incomepart>
+    <IncomepartName>Процент удержания</IncomepartName>
+
+    <!-- Ограничения -->
+    <SearchType>1</SearchType>
+    <IdRD>RD-2024-0001</IdRD>
+    <IDExternalKey>EXT-KEY-00001</IDExternalKey>
+    <IDSum>10000.00</IDSum>
+    <LimitSum>50000.00</LimitSum>
+    <LimitDate>2024-12-31</LimitDate>
+    <Procent>10</Procent>
+    <EndDate>2025-03-15</EndDate>
+
+    <!-- Социальные параметры -->
+    <SDGroupPopulation>1</SDGroupPopulation>
+    <OrderLivingWageAcc>true</OrderLivingWageAcc>
+
+    <!-- Банк -->
+    <BankName>ПАО Сбербанк</BankName>
+    <BankBIK>044525225</BankBIK>
+
+    <!-- Сохранение -->
+    <SaveActDate>2024-04-10</SaveActDate>
+    <SaveActOrgan>ФССП России</SaveActOrgan>
+    <Region>77</Region>
+
+    <!-- Произвольные данные -->
+    <ArbitraryXmlData>
+        <AdditionalInfo>
+            <Comment>Тестовые данные для проверки интеграции</Comment>
+        </AdditionalInfo>
+    </ArbitraryXmlData>
+
+</OIp>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fssp:OIp
+    xmlns:fssp="http://www.fssp.gov.ru/namespace/order_fssp/2022/1">
+
+    <!-- === Идентификация документа === -->
+    <fssp:Id>1000000000001</fssp:Id>
+    <fssp:DocType>01</fssp:DocType>
+    <fssp:DocName>Исполнительное производство о взыскании задолженности</fssp:DocName>
+    <fssp:Barcode>1234567890123456789012345</fssp:Barcode>
+
+    <!-- === Подразделение ФССП === -->
+    <fssp:DivVksp>770001</fssp:DivVksp>
+    <fssp:DivName>Отдел судебных приставов по Центральному району</fssp:DivName>
+    <fssp:DivCity>г. Москва</fssp:DivCity>
+    <fssp:DivAdr>125009, г. Москва, ул. Тверская, д. 1</fssp:DivAdr>
+
+    <!-- === Документ === -->
+    <fssp:DocDate>2024-03-15</fssp:DocDate>
+    <fssp:AdjudicationText>
+        Судебным актом установлена обязанность должника по уплате задолженности.
+    </fssp:AdjudicationText>
+    <fssp:ResolutionText>
+        Взыскать задолженность в принудительном порядке.
+    </fssp:ResolutionText>
+
+    <!-- === Подписант === -->
+    <fssp:IsFSSP>true</fssp:IsFSSP>
+    <fssp:FioSign>Иванов Иван Иванович</fssp:FioSign>
+    <fssp:OrganSignPostCode>770001</fssp:OrganSignPostCode>
+    <fssp:SpecialGradesSign>капитан внутренней службы</fssp:SpecialGradesSign>
+    <fssp:OrganSignPost>Судебный пристав-исполнитель</fssp:OrganSignPost>
+
+    <!-- === Общие признаки === -->
+    <fssp:IsOrder>false</fssp:IsOrder>
+    <fssp:SvodQuantity>2</fssp:SvodQuantity>
+    <fssp:ArrActDate>2024-04-01</fssp:ArrActDate>
+
+    <!-- === Должник === -->
+    <fssp:DebtorType>1</fssp:DebtorType>
+    <fssp:DbtrName>Петров Пётр Петрович</fssp:DbtrName>
+    <fssp:DbtrAdr>109012, г. Москва, ул. Арбат, д. 10</fssp:DbtrAdr>
+    <fssp:idDbtrBorn>1985-07-12</fssp:idDbtrBorn>
+    <fssp:IdDbtrBornadr>г. Москва</fssp:IdDbtrBornadr>
+    <fssp:DbtrInn>770123456789</fssp:DbtrInn>
+    <fssp:DbtrKpp>770101001</fssp:DbtrKpp>
+    <fssp:IdDbtrOgrn>1027700132195</fssp:IdDbtrOgrn>
+    <fssp:IdDbtrSNILS>11223344595</fssp:IdDbtrSNILS>
+    <fssp:IdDbtrUIP>12345678901234567890</fssp:IdDbtrUIP>
+
+    <!-- === Судебный орган === -->
+    <fssp:IdCourtName>Тверской районный суд г. Москвы</fssp:IdCourtName>
+    <fssp:IdCourtAdr>125009, г. Москва, ул. Дмитровка, д. 15</fssp:IdCourtAdr>
+    <fssp:IdCourt>77001</fssp:IdCourt>
+
+    <!-- === Исполнительное производство === -->
+    <fssp:IpRisepristName>Иванов Сергей Николаевич</fssp:IpRisepristName>
+    <fssp:Spi>Иванов Сергей Николаевич</fssp:Spi>
+    <fssp:SpiSignPostCode>770001</fssp:SpiSignPostCode>
+    <fssp:SpiSignPost>Судебный пристав-исполнитель</fssp:SpiSignPost>
+    <fssp:IpNo>12345/24/77001-ИП</fssp:IpNo>
+    <fssp:IpId>987654321</fssp:IpId>
+    <fssp:IpRiseDate>2024-03-20</fssp:IpRiseDate>
+    <fssp:IpRestDebtsum>150000.50</fssp:IpRestDebtsum>
+    <fssp:IpRestOthersum>2500.00</fssp:IpRestOthersum>
+
+    <!-- === Исполнительный документ === -->
+    <fssp:IdType>01</fssp:IdType>
+    <fssp:IdDocNo>АБ-123456</fssp:IdDocNo>
+    <fssp:IdDocDate>2024-02-28</fssp:IdDocDate>
+    <fssp:IdDeloNo>2-3456/2024</fssp:IdDeloNo>
+    <fssp:IdDeloDate>2024-02-20</fssp:IdDeloDate>
+
+    <!-- === Задолженность === -->
+    <fssp:IdDebtCls>01</fssp:IdDebtCls>
+    <fssp:IdDebtSum>150000.50</fssp:IdDebtSum>
+    <fssp:DebtsumCurrencyCode>643</fssp:DebtsumCurrencyCode>
+    <fssp:TotalArrestDebtSum>50000.00</fssp:TotalArrestDebtSum>
+    <fssp:IdDebtText>Задолженность по договору займа</fssp:IdDebtText>
+    <fssp:IdCrdrName>ООО «Финансовая компания»</fssp:IdCrdrName>
+    <fssp:IdCrdrAdr>119019, г. Москва, ул. Новый Арбат, д. 21</fssp:IdCrdrAdr>
+
+    <!-- === Удержания === -->
+    <fssp:Incomepart>50</fssp:Incomepart>
+    <fssp:IncomepartName>Процент удержания из доходов</fssp:IncomepartName>
+
+    <!-- === Ограничения === -->
+    <fssp:SearchType>1</fssp:SearchType>
+    <fssp:IdRD>RD-2024-0001</fssp:IdRD>
+    <fssp:IDExternalKey>EXT-KEY-00001</fssp:IDExternalKey>
+    <fssp:IDSum>10000.00</fssp:IDSum>
+    <fssp:LimitSum>50000.00</fssp:LimitSum>
+    <fssp:LimitDate>2024-12-31</fssp:LimitDate>
+    <fssp:Procent>10</fssp:Procent>
+    <fssp:EndDate>2025-03-15</fssp:EndDate>
+
+    <!-- === Социальные параметры === -->
+    <fssp:SDGroupPopulation>1</fssp:SDGroupPopulation>
+    <fssp:OrderLivingWageAcc>true</fssp:OrderLivingWageAcc>
+
+    <!-- === Банк === -->
+    <fssp:BankName>ПАО «Сбербанк России»</fssp:BankName>
+    <fssp:BankBIK>044525225</fssp:BankBIK>
+
+    <!-- === Сохранение === -->
+    <fssp:SaveActDate>2024-04-10</fssp:SaveActDate>
+    <fssp:SaveActOrgan>ФССП России</fssp:SaveActOrgan>
+    <fssp:Region>77</fssp:Region>
+
+    <!-- === Произвольные данные === -->
+    <fssp:ArbitraryXmlData>
+        <ExtraInfo>
+            <Comment>Дополнительные сведения для обработки</Comment>
+        </ExtraInfo>
+    </fssp:ArbitraryXmlData>
+
+</fssp:OIp>
