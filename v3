@@ -1,0 +1,804 @@
+CREATE OR REPLACE PROCEDURE validate_xml_by_doctype (
+    p_doc_num IN VARCHAR2
+)
+AS
+    -- ================================================================
+    -- Переменные
+    -- ================================================================
+    v_xml              XMLTYPE;
+    v_doc_type         VARCHAR2(50);
+    v_internal_key     VARCHAR2(40);
+    v_barcode          VARCHAR2(44);
+    v_ep_status        VARCHAR2(10);   -- статус электронной подписи из таблицы
+    v_errors           VARCHAR2(32767) := '';
+    v_error_count      PLS_INTEGER     := 0;
+    v_info             VARCHAR2(32767) := '';
+    v_dup_count        NUMBER          := 0;
+    v_val              VARCHAR2(4000);
+
+    -- Код статуса квитанции DocumentStateReceipt
+    -- 90 — подпись не прошла проверку
+    -- 91 — документ не соответствует XSD-схеме
+    -- 92 — ошибка форматно-логического контроля
+    -- 94 — дубликат
+    -- 05 — некорректное/противоречивое содержание (отсутствуют реквизиты)
+    -- 07 — лицо/объект отсутствует в учёте
+    v_receipt_status   VARCHAR2(5)     := NULL;
+    v_receipt_message  VARCHAR2(4000)  := NULL;
+
+    -- ================================================================
+    -- Исключения
+    -- ================================================================
+    e_not_found        EXCEPTION;
+    PRAGMA EXCEPTION_INIT(e_not_found, -20001);
+
+    -- Управляющее исключение: прерывает цепочку проверок
+    -- при критической ошибке (пп. 1-4 из IMG_8022)
+    e_stop_validation  EXCEPTION;
+    PRAGMA EXCEPTION_INIT(e_stop_validation, -20010);
+
+    -- ================================================================
+    -- Функция: реально читает значение узла XML через XMLQuery
+    -- ================================================================
+    FUNCTION get_xml_val (
+        p_xml   IN XMLTYPE,
+        p_xpath IN VARCHAR2
+    ) RETURN VARCHAR2
+    IS
+        v_result VARCHAR2(4000);
+    BEGIN
+        SELECT TRIM(
+                   XMLCAST(
+                       XMLQUERY(p_xpath PASSING p_xml RETURNING CONTENT)
+                       AS VARCHAR2(4000)
+                   )
+               )
+          INTO v_result
+          FROM DUAL;
+
+        IF v_result = '' THEN v_result := NULL; END IF;
+        RETURN v_result;
+    EXCEPTION
+        WHEN OTHERS THEN RETURN NULL;
+    END get_xml_val;
+
+    -- ================================================================
+    -- Процедура: добавляет информационное сообщение
+    -- ================================================================
+    PROCEDURE add_info (p_text IN VARCHAR2) IS
+    BEGIN
+        v_info := v_info || '  >> ' || p_text || CHR(10);
+    END add_info;
+
+    -- ================================================================
+    -- Процедура: добавляет ошибку форматно-логического контроля
+    -- ================================================================
+    PROCEDURE add_error (
+        p_section IN VARCHAR2,
+        p_field   IN VARCHAR2,
+        p_xpath   IN VARCHAR2
+    ) IS
+        v_extracted VARCHAR2(4000);
+    BEGIN
+        v_extracted := get_xml_val(v_xml, p_xpath);
+        IF v_extracted IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors
+                || '  [' || LPAD(v_error_count, 2, '0') || '] '
+                || RPAD(p_section, 38) || ' | ' || p_field || CHR(10);
+        END IF;
+    END add_error;
+
+    -- ================================================================
+    -- Процедура: выводит квитанцию DocumentStateReceipt и ОСТАНАВЛИВАЕТ
+    -- дальнейшую обработку (IMG_8022: каждый пункт — отдельная квитанция,
+    -- после которой обработка не продолжается)
+    -- ================================================================
+    PROCEDURE emit_receipt (
+        p_state_id IN VARCHAR2,
+        p_message  IN VARCHAR2
+    ) IS
+    BEGIN
+        v_receipt_status  := p_state_id;
+        v_receipt_message := p_message;
+        -- Прерываем цепочку проверок
+        RAISE_APPLICATION_ERROR(-20010,
+            'СТОП: сформирована квитанция StateId=' || p_state_id);
+    END emit_receipt;
+
+    -- ================================================================
+    -- IMG_8022, П.1: Проверка электронной подписи (ЭП)
+    -- ODS берёт файл и проверяет ЭП перед сохранением.
+    -- Источник статуса ЭП — колонка EP_STATUS в таблице.
+    -- Если ЭП отсутствует или невалидна → StateId = 90
+    -- ================================================================
+    PROCEDURE check_ep IS
+    BEGIN
+        IF v_ep_status IS NULL OR v_ep_status != 'VALID' THEN
+            emit_receipt(
+                '90',
+                'Подпись не прошла проверку. '
+                    || 'ЭП статус: ' || NVL(v_ep_status, 'ОТСУТСТВУЕТ')
+            );
+        ELSE
+            add_info('П.1 ЭП: проверка пройдена (EP_STATUS=' || v_ep_status || ')');
+        END IF;
+    END check_ep;
+
+    -- ================================================================
+    -- IMG_8022, П.2: Проверка обязательных реквизитов (XSD-схема)
+    -- Проверяем обязательные поля Табл.9 и Табл.12.
+    -- Если хотя бы одно отсутствует → StateId = 91
+    -- ================================================================
+    PROCEDURE check_xsd_required IS
+        v_xsd_errors  VARCHAR2(4000) := '';
+        v_xsd_count   PLS_INTEGER    := 0;
+
+        PROCEDURE xsd_field (p_xpath IN VARCHAR2, p_name IN VARCHAR2) IS
+            v_v VARCHAR2(4000);
+        BEGIN
+            v_v := get_xml_val(v_xml, p_xpath);
+            IF v_v IS NULL THEN
+                v_xsd_count  := v_xsd_count + 1;
+                v_xsd_errors := v_xsd_errors
+                    || '    [' || v_xsd_count || '] ' || p_name || CHR(10);
+            END IF;
+        END xsd_field;
+
+    BEGIN
+        -- Табл. 9 — корневые обязательные поля
+        xsd_field('string(/Restrictn/InternalKey)',        'Restrictn/InternalKey');
+        xsd_field('string(/Restrictn/DocDate)',            'Restrictn/DocDate');
+        xsd_field('string(/Restrictn/DocNum)',             'Restrictn/DocNum');
+        xsd_field('string(/Restrictn/DocCode)',            'Restrictn/DocCode');
+        -- Табл. 12 — обязательные поля IP
+        xsd_field('string(/Restrictn/IP/InternalKey)',     'Restrictn/IP/InternalKey');
+        xsd_field('string(/Restrictn/IP/IPNum)',           'Restrictn/IP/IPNum');
+        xsd_field('string(/Restrictn/IP/DebtorType)',      'Restrictn/IP/DebtorType');
+        xsd_field('string(/Restrictn/IP/DebtorName)',      'Restrictn/IP/DebtorName');
+        xsd_field('string(/Restrictn/IP/DebtorAdr)',       'Restrictn/IP/DebtorAdr');
+        -- Табл. 16 — ДУЛ (если блок присутствует)
+        IF get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData)') IS NOT NULL THEN
+            xsd_field('string(/Restrictn/Data/IdentificationData/TypeDoc)', 'IdentificationData/TypeDoc');
+            xsd_field('string(/Restrictn/Data/IdentificationData/NumDoc)',  'IdentificationData/NumDoc');
+        END IF;
+        -- Табл. 17 — счёт (если блок присутствует)
+        IF get_xml_val(v_xml, 'string(/Restrictn/Data/accountDatum)') IS NOT NULL THEN
+            xsd_field('string(/Restrictn/Data/accountDatum/Acc)',     'accountDatum/Acc');
+            xsd_field('string(/Restrictn/Data/accountDatum/BicBank)', 'accountDatum/BicBank');
+        END IF;
+
+        IF v_xsd_count > 0 THEN
+            emit_receipt(
+                '91',
+                'Документ не соответствует XSD-схеме. '
+                    || 'Отсутствуют обязательные реквизиты (' || v_xsd_count || ' шт.):' || CHR(10)
+                    || v_xsd_errors
+            );
+        ELSE
+            add_info('П.2 XSD: все обязательные реквизиты присутствуют');
+        END IF;
+    END check_xsd_required;
+
+    -- ================================================================
+    -- IMG_8022, П.3: Форматно-логический контроль
+    -- Проверяем форматы значений: даты, числа, длины полей.
+    -- Если ошибка → StateId = 92
+    -- Дополнительно: проверка Barcode для исключения повторного исполнения
+    -- ================================================================
+    PROCEDURE check_format_logic IS
+        v_flc_errors VARCHAR2(4000) := '';
+        v_flc_count  PLS_INTEGER    := 0;
+        v_date_val   DATE;
+        v_num_val    NUMBER;
+        v_str        VARCHAR2(4000);
+
+        PROCEDURE flc_error (p_msg IN VARCHAR2) IS
+        BEGIN
+            v_flc_count  := v_flc_count + 1;
+            v_flc_errors := v_flc_errors
+                || '    [' || v_flc_count || '] ' || p_msg || CHR(10);
+        END flc_error;
+
+    BEGIN
+        -- DocDate: формат YYYY-MM-DD
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/DocDate)');
+        IF v_str IS NOT NULL THEN
+            BEGIN
+                v_date_val := TO_DATE(v_str, 'YYYY-MM-DD');
+                -- Дата не должна быть в будущем более чем на 1 день
+                IF v_date_val > SYSDATE + 1 THEN
+                    flc_error('DocDate = "' || v_str || '" — дата в будущем');
+                END IF;
+            EXCEPTION
+                WHEN OTHERS THEN
+                    flc_error('DocDate = "' || v_str || '" — неверный формат (ожидается YYYY-MM-DD)');
+            END;
+        END IF;
+
+        -- StartDate: формат YYYY-MM-DD
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/StartDate)');
+        IF v_str IS NOT NULL THEN
+            BEGIN
+                v_date_val := TO_DATE(v_str, 'YYYY-MM-DD');
+            EXCEPTION
+                WHEN OTHERS THEN
+                    flc_error('StartDate = "' || v_str || '" — неверный формат (ожидается YYYY-MM-DD)');
+            END;
+        END IF;
+
+        -- FinDate: формат YYYY-MM-DD, должна быть >= StartDate
+        DECLARE
+            v_start DATE;
+            v_fin   DATE;
+            v_s_str VARCHAR2(4000);
+            v_f_str VARCHAR2(4000);
+        BEGIN
+            v_s_str := get_xml_val(v_xml, 'string(/Restrictn/StartDate)');
+            v_f_str := get_xml_val(v_xml, 'string(/Restrictn/FinDate)');
+            IF v_s_str IS NOT NULL AND v_f_str IS NOT NULL THEN
+                v_start := TO_DATE(v_s_str, 'YYYY-MM-DD');
+                v_fin   := TO_DATE(v_f_str, 'YYYY-MM-DD');
+                IF v_fin < v_start THEN
+                    flc_error('FinDate (' || v_f_str || ') < StartDate (' || v_s_str || ')');
+                END IF;
+            END IF;
+        EXCEPTION
+            WHEN OTHERS THEN NULL;
+        END;
+
+        -- Amount: должно быть числом >= 0
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/Amount)');
+        IF v_str IS NOT NULL THEN
+            BEGIN
+                v_num_val := TO_NUMBER(REPLACE(v_str, ',', '.'));
+                IF v_num_val < 0 THEN
+                    flc_error('Amount = "' || v_str || '" — значение не может быть отрицательным');
+                END IF;
+            EXCEPTION
+                WHEN VALUE_ERROR THEN
+                    flc_error('Amount = "' || v_str || '" — не является числом');
+            END;
+        END IF;
+
+        -- DebtorType: допустимые значения 1, 2, 3
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorType)');
+        IF v_str IS NOT NULL AND v_str NOT IN ('1','2','3') THEN
+            flc_error('IP/DebtorType = "' || v_str || '" — допустимы: 1 (ЮЛ), 2 (ФЛ), 3 (ИП)');
+        END IF;
+
+        -- BicBank: ровно 9 цифр
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/Data/accountDatum/BicBank)');
+        IF v_str IS NOT NULL THEN
+            IF LENGTH(TRIM(v_str)) != 9 OR REGEXP_LIKE(v_str, '[^0-9]') THEN
+                flc_error('accountDatum/BicBank = "' || v_str || '" — должен быть 9 цифр');
+            END IF;
+        END IF;
+
+        -- Acc: ровно 20 цифр
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/Data/accountDatum/Acc)');
+        IF v_str IS NOT NULL THEN
+            IF LENGTH(TRIM(v_str)) != 20 OR REGEXP_LIKE(v_str, '[^0-9]') THEN
+                flc_error('accountDatum/Acc = "' || v_str || '" — должен быть 20 цифр');
+            END IF;
+        END IF;
+
+        -- DebtorINN: 10 цифр (ЮЛ) или 12 цифр (ФЛ/ИП)
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorINN)');
+        IF v_str IS NOT NULL THEN
+            IF LENGTH(TRIM(v_str)) NOT IN (10, 12) OR REGEXP_LIKE(v_str, '[^0-9]') THEN
+                flc_error('IP/DebtorINN = "' || v_str || '" — должен быть 10 или 12 цифр');
+            END IF;
+        END IF;
+
+        -- DebtorSnils: 14 символов формата NNN-NNN-NNN NN
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorSnils)');
+        IF v_str IS NOT NULL THEN
+            IF NOT REGEXP_LIKE(v_str, '^\d{3}-\d{3}-\d{3} \d{2}$') THEN
+                flc_error('IP/DebtorSnils = "' || v_str || '" — формат должен быть NNN-NNN-NNN NN');
+            END IF;
+        END IF;
+
+        -- birthDate в IdentificationData: формат YYYY-MM-DD
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/birthDate)');
+        IF v_str IS NOT NULL THEN
+            BEGIN
+                v_date_val := TO_DATE(v_str, 'YYYY-MM-DD');
+                -- Дата рождения не может быть в будущем
+                IF v_date_val > SYSDATE THEN
+                    flc_error('IdentificationData/birthDate = "' || v_str || '" — дата рождения в будущем');
+                END IF;
+                -- Возраст не более 150 лет
+                IF v_date_val < SYSDATE - 365*150 THEN
+                    flc_error('IdentificationData/birthDate = "' || v_str || '" — некорректная дата рождения');
+                END IF;
+            EXCEPTION
+                WHEN OTHERS THEN
+                    flc_error('IdentificationData/birthDate = "' || v_str || '" — неверный формат');
+            END;
+        END IF;
+
+        -- Barcode: если присутствует — ровно 44 символа
+        -- IMG_8022: используется для исключения повторного исполнения
+        -- (сравнение числа до дефиса в штрих-коде с InternalKey)
+        v_str := get_xml_val(v_xml, 'string(/Restrictn/Barcode)');
+        IF v_str IS NOT NULL THEN
+            IF LENGTH(TRIM(v_str)) != 44 THEN
+                flc_error('Restrictn/Barcode = "' || v_str || '" — должен быть 44 символа');
+            ELSE
+                -- Проверяем что число до дефиса совпадает с InternalKey
+                -- (защита от повторного исполнения бумажного постановления)
+                DECLARE
+                    v_barcode_key VARCHAR2(40);
+                BEGIN
+                    v_barcode_key := SUBSTR(v_str, 1, INSTR(v_str, '-') - 1);
+                    IF v_barcode_key IS NOT NULL
+                       AND v_internal_key IS NOT NULL
+                       AND v_barcode_key != v_internal_key
+                    THEN
+                        flc_error(
+                            'Barcode: число до дефиса ("' || v_barcode_key
+                            || '") не совпадает с InternalKey ("' || v_internal_key
+                            || '") — возможно повторное исполнение'
+                        );
+                    ELSE
+                        add_info('П.3 Barcode: совпадение с InternalKey подтверждено');
+                    END IF;
+                END;
+            END IF;
+        END IF;
+
+        IF v_flc_count > 0 THEN
+            emit_receipt(
+                '92',
+                'Ошибка форматно-логического контроля. '
+                    || 'Найдено нарушений: ' || v_flc_count || ':' || CHR(10)
+                    || v_flc_errors
+            );
+        ELSE
+            add_info('П.3 ФЛК: форматно-логический контроль пройден');
+        END IF;
+    END check_format_logic;
+
+    -- ================================================================
+    -- IMG_8022, П.4: Проверка дублей
+    -- Ищем постановление с тем же InternalKey (из XML и из таблицы).
+    -- Если найдено → StateId = 94
+    -- ================================================================
+    PROCEDURE check_duplicates IS
+        v_xml_key    VARCHAR2(40);
+        v_dup_docnum VARCHAR2(25);
+    BEGIN
+        -- Читаем InternalKey из XML
+        v_xml_key := get_xml_val(v_xml, 'string(/Restrictn/InternalKey)');
+
+        IF v_xml_key IS NOT NULL THEN
+            -- Ищем другой документ с таким же InternalKey
+            BEGIN
+                SELECT doc_num
+                  INTO v_dup_docnum
+                  FROM fssp_restrictions
+                 WHERE internal_key = v_xml_key
+                   AND doc_num     != p_doc_num
+                   AND ROWNUM       = 1;
+
+                -- Нашли дубль
+                emit_receipt(
+                    '94',
+                    'Дубликат: постановление с InternalKey="' || v_xml_key
+                        || '" уже зарегистрировано под номером "' || v_dup_docnum || '"'
+                );
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    add_info('П.4 Дубли: дублей не найдено (InternalKey=' || v_xml_key || ')');
+            END;
+        END IF;
+    END check_duplicates;
+
+    -- ================================================================
+    -- IMG_8022, П.5: Проверка идентификационных реквизитов должника
+    -- Хотя бы один набор обязателен: ИНН / СНИЛС / паспорт+ДР / ФИО
+    -- Если ни одного → RestrictionAnswerType = 05
+    -- ================================================================
+    PROCEDURE check_debtor_id IS
+        v_inn       VARCHAR2(4000);
+        v_snils     VARCHAR2(4000);
+        v_ser_doc   VARCHAR2(4000);
+        v_num_doc   VARCHAR2(4000);
+        v_birth     VARCHAR2(4000);
+        v_surname   VARCHAR2(4000);
+        v_firstname VARCHAR2(4000);
+        v_id_errors VARCHAR2(4000) := '';
+        v_id_count  PLS_INTEGER    := 0;
+        v_found     BOOLEAN        := FALSE;
+
+        PROCEDURE id_miss (p_msg IN VARCHAR2) IS
+        BEGIN
+            v_id_count  := v_id_count + 1;
+            v_id_errors := v_id_errors || '    [' || v_id_count || '] ' || p_msg || CHR(10);
+        END id_miss;
+
+    BEGIN
+        -- Набор 1: ИНН
+        v_inn := NVL(
+            get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorINN)'),
+            get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/INN)')
+        );
+        IF v_inn IS NOT NULL THEN
+            add_info('П.5 Идентификация: ИНН = ' || v_inn);
+            v_found := TRUE;
+        ELSE
+            id_miss('ИНН отсутствует (IP/DebtorINN и IdentificationData/INN)');
+        END IF;
+
+        -- Набор 2: СНИЛС
+        v_snils := get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorSnils)');
+        IF v_snils IS NOT NULL THEN
+            add_info('П.5 Идентификация: СНИЛС = ' || v_snils);
+            v_found := TRUE;
+        ELSE
+            id_miss('СНИЛС отсутствует (IP/DebtorSnils)');
+        END IF;
+
+        -- Набор 3: Серия + номер паспорта + дата рождения
+        v_ser_doc := get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/SerDoc)');
+        v_num_doc := get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/NumDoc)');
+        v_birth   := get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/birthDate)');
+
+        IF v_ser_doc IS NOT NULL AND v_num_doc IS NOT NULL AND v_birth IS NOT NULL THEN
+            add_info('П.5 Идентификация: паспорт ' || v_ser_doc || ' '
+                     || v_num_doc || ' ДР=' || v_birth);
+            v_found := TRUE;
+        ELSE
+            id_miss('Паспорт + дата рождения неполные: '
+                || 'SerDoc=' || NVL(v_ser_doc,'NULL')
+                || ' NumDoc=' || NVL(v_num_doc,'NULL')
+                || ' birthDate=' || NVL(v_birth,'NULL'));
+        END IF;
+
+        -- Набор 4: Фамилия + Имя
+        v_surname   := NVL(
+            get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorFio/Surname)'),
+            get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/FIODoc/Surname)')
+        );
+        v_firstname := NVL(
+            get_xml_val(v_xml, 'string(/Restrictn/IP/DebtorFio/FirstName)'),
+            get_xml_val(v_xml, 'string(/Restrictn/Data/IdentificationData/FIODoc/FirstName)')
+        );
+        IF v_surname IS NOT NULL AND v_firstname IS NOT NULL THEN
+            add_info('П.5 Идентификация: ФИО = ' || v_surname || ' ' || v_firstname);
+            v_found := TRUE;
+        ELSE
+            id_miss('ФИО неполное: Surname=' || NVL(v_surname,'NULL')
+                || ' FirstName=' || NVL(v_firstname,'NULL'));
+        END IF;
+
+        -- Если ни один набор не найден — ошибка, статус 05
+        IF NOT v_found THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors
+                || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Идентификация должника (П.5)',38) || ' | '
+                || 'Ни один набор идентификации не найден:' || CHR(10)
+                || v_id_errors;
+            -- Статус 05 выставляется в итоговом блоке через v_error_count > 0
+        END IF;
+    END check_debtor_id;
+
+    -- ================================================================
+    -- Специфические проверки по DocType (IMG_8019, IMG_8020, IMG_8021)
+    -- ================================================================
+    PROCEDURE check_limit_sum IS
+        v_amount VARCHAR2(4000);
+        v_num    NUMBER;
+    BEGIN
+        v_amount := get_xml_val(v_xml, 'string(/Restrictn/Amount)');
+        IF v_amount IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Restrictn',38) || ' | Amount (LimitSum) — отсутствует' || CHR(10);
+        ELSE
+            BEGIN
+                v_num := TO_NUMBER(REPLACE(v_amount,',','.'));
+                IF v_num <= 0 THEN
+                    v_error_count := v_error_count + 1;
+                    v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                        || RPAD('Restrictn',38) || ' | Amount = ' || v_amount
+                        || ' — должно быть > 0' || CHR(10);
+                ELSE
+                    add_info('Amount (LimitSum) = ' || v_amount);
+                END IF;
+            EXCEPTION WHEN VALUE_ERROR THEN
+                v_error_count := v_error_count + 1;
+                v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                    || RPAD('Restrictn',38) || ' | Amount = "' || v_amount
+                    || '" — не является числом' || CHR(10);
+            END;
+        END IF;
+    END check_limit_sum;
+
+    PROCEDURE check_availability_acc IS
+        v_acc VARCHAR2(4000);
+        v_bic VARCHAR2(4000);
+    BEGIN
+        v_acc := get_xml_val(v_xml, 'string(/Restrictn/Data/accountDatum/Acc)');
+        v_bic := get_xml_val(v_xml, 'string(/Restrictn/Data/accountDatum/BicBank)');
+
+        IF v_acc IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Data/accountDatum',38) || ' | Acc — отсутствует' || CHR(10);
+        ELSIF LENGTH(TRIM(v_acc)) != 20 OR REGEXP_LIKE(v_acc,'[^0-9]') THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Data/accountDatum',38) || ' | Acc = "' || v_acc
+                || '" — должен быть 20 цифр' || CHR(10);
+        ELSE add_info('Acc = ' || v_acc); END IF;
+
+        IF v_bic IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Data/accountDatum',38) || ' | BicBank — отсутствует' || CHR(10);
+        ELSIF LENGTH(TRIM(v_bic)) != 9 OR REGEXP_LIKE(v_bic,'[^0-9]') THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Data/accountDatum',38) || ' | BicBank = "' || v_bic
+                || '" — должен быть 9 цифр' || CHR(10);
+        ELSE add_info('BicBank = ' || v_bic); END IF;
+    END check_availability_acc;
+
+    PROCEDURE check_ip_docs_info IS
+        v_id   VARCHAR2(4000);
+        v_dt   VARCHAR2(4000);
+        v_date DATE;
+    BEGIN
+        v_id := get_xml_val(v_xml, 'string(/Restrictn/RestrDocId)');
+        v_dt := get_xml_val(v_xml, 'string(/Restrictn/RestrDocDate)');
+
+        IF v_id IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Restrictn (IPDocsInfo)',38)
+                || ' | RestrDocId — отсутствует' || CHR(10);
+        ELSE add_info('RestrDocId = ' || v_id); END IF;
+
+        IF v_dt IS NULL THEN
+            v_error_count := v_error_count + 1;
+            v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                || RPAD('Restrictn (IPDocsInfo)',38)
+                || ' | RestrDocDate — отсутствует' || CHR(10);
+        ELSE
+            BEGIN
+                v_date := TO_DATE(v_dt, 'YYYY-MM-DD');
+                add_info('RestrDocDate = ' || v_dt);
+            EXCEPTION WHEN OTHERS THEN
+                v_error_count := v_error_count + 1;
+                v_errors := v_errors || '  [' || LPAD(v_error_count,2,'0') || '] '
+                    || RPAD('Restrictn (IPDocsInfo)',38)
+                    || ' | RestrDocDate = "' || v_dt
+                    || '" — неверный формат даты' || CHR(10);
+            END;
+        END IF;
+    END check_ip_docs_info;
+
+    PROCEDURE check_living_wage (p_full IN BOOLEAN DEFAULT TRUE) IS
+        v_sdg VARCHAR2(4000); v_acc VARCHAR2(4000);
+        v_bnk VARCHAR2(4000); v_bik VARCHAR2(4000); v_reg VARCHAR2(4000);
+    BEGIN
+        v_sdg := get_xml_val(v_xml,'string(/Restrictn/WageRetention/SDGroupPopulation)');
+        v_acc := get_xml_val(v_xml,'string(/Restrictn/WageRetention/OrderLivingWageAcc)');
+        v_bnk := get_xml_val(v_xml,'string(/Restrictn/WageRetention/BankName)');
+        v_bik := get_xml_val(v_xml,'string(/Restrictn/WageRetention/BankBIK)');
+        v_reg := get_xml_val(v_xml,'string(/Restrictn/WageRetention/Region)');
+
+        IF v_sdg IS NULL THEN
+            v_error_count := v_error_count+1;
+            v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                ||RPAD('WageRetention',38)||' | SDGroupPopulation — отсутствует'||CHR(10);
+        ELSE add_info('SDGroupPopulation = '||v_sdg); END IF;
+
+        IF v_acc IS NULL THEN
+            v_error_count := v_error_count+1;
+            v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                ||RPAD('WageRetention',38)||' | OrderLivingWageAcc — отсутствует'||CHR(10);
+        ELSE add_info('OrderLivingWageAcc = '||v_acc); END IF;
+
+        IF v_bnk IS NULL THEN
+            v_error_count := v_error_count+1;
+            v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                ||RPAD('WageRetention',38)||' | BankName — отсутствует'||CHR(10);
+        ELSE add_info('BankName = '||v_bnk); END IF;
+
+        IF p_full THEN
+            IF v_bik IS NULL THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('WageRetention',38)||' | BankBIK — отсутствует'||CHR(10);
+            ELSIF LENGTH(TRIM(v_bik))!=9 THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('WageRetention',38)||' | BankBIK = "'||v_bik
+                    ||'" — должен быть 9 символов'||CHR(10);
+            ELSE add_info('BankBIK = '||v_bik); END IF;
+
+            IF v_reg IS NULL THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('WageRetention',38)||' | Region — отсутствует'||CHR(10);
+            ELSE add_info('Region = '||v_reg); END IF;
+        END IF;
+    END check_living_wage;
+
+    PROCEDURE check_osp_property IS
+        v_f VARCHAR2(4000);
+        PROCEDURE osp(p_name VARCHAR2, p_xpath VARCHAR2, p_len NUMBER DEFAULT NULL) IS
+        BEGIN
+            v_f := get_xml_val(v_xml, p_xpath);
+            IF v_f IS NULL THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('OspProperty',38)||' | '||p_name||' — отсутствует'||CHR(10);
+            ELSIF p_len IS NOT NULL AND LENGTH(TRIM(v_f)) != p_len THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('OspProperty',38)||' | '||p_name||' = "'||v_f
+                    ||'" — ожидается длина '||p_len||CHR(10);
+            ELSE add_info('OspProperty/'||p_name||' = '||v_f); END IF;
+        END osp;
+    BEGIN
+        osp('OspCode',  'string(/Restrictn/OspProperty/OspCode)');
+        osp('RecpName', 'string(/Restrictn/OspProperty/RecpName)');
+        osp('RecpAdr',  'string(/Restrictn/OspProperty/RecpAdr)');
+        osp('RecpBank', 'string(/Restrictn/OspProperty/RecpBank)');
+        osp('RecpBIK',  'string(/Restrictn/OspProperty/RecpBIK)',  9);
+        osp('RecpINN',  'string(/Restrictn/OspProperty/RecpINN)');
+        osp('RecpKPP',  'string(/Restrictn/OspProperty/RecpKPP)',  9);
+    END check_osp_property;
+
+BEGIN
+    -- ================================================================
+    -- 0. Читаем запись из таблицы
+    --    FSSP_RESTRICTIONS (
+    --        DOC_NUM       VARCHAR2(25),
+    --        DOC_TYPE      VARCHAR2(50),
+    --        XML_RESTRICTN XMLTYPE,
+    --        INTERNAL_KEY  VARCHAR2(40),
+    --        EP_STATUS     VARCHAR2(10)  -- 'VALID' | 'INVALID' | NULL
+    --    )
+    -- ================================================================
+    BEGIN
+        SELECT xml_restrictn, doc_type, internal_key, ep_status
+          INTO v_xml, v_doc_type, v_internal_key, v_ep_status
+          FROM fssp_restrictions
+         WHERE doc_num = p_doc_num
+           AND ROWNUM  = 1;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001,
+                'Постановление "' || p_doc_num || '" не найдено.');
+    END;
+
+    -- ================================================================
+    -- Заголовок
+    -- ================================================================
+    DBMS_OUTPUT.PUT_LINE('╔══════════════════════════════════════════════════════════════╗');
+    DBMS_OUTPUT.PUT_LINE('║  ПРОВЕРКА: ' || RPAD(p_doc_num, 50) || '║');
+    DBMS_OUTPUT.PUT_LINE('║  DocType: ' || RPAD(NVL(v_doc_type,'НЕ ОПРЕДЕЛЁН'),51) || '║');
+    DBMS_OUTPUT.PUT_LINE('╚══════════════════════════════════════════════════════════════╝');
+
+    -- ================================================================
+    -- ПОСЛЕДОВАТЕЛЬНЫЕ ПРОВЕРКИ ПО IMG_8022
+    -- Каждая критическая (пп.1-4) прерывает цепочку через emit_receipt.
+    -- ================================================================
+
+    -- П.1: Электронная подпись → StateId = 90
+    DBMS_OUTPUT.PUT_LINE(CHR(10) || '[ П.1 IMG_8022 ] Проверка электронной подписи');
+    check_ep;
+
+    -- П.2: XSD-схема (обязательные реквизиты) → StateId = 91
+    DBMS_OUTPUT.PUT_LINE('[ П.2 IMG_8022 ] Проверка соответствия XSD-схеме');
+    check_xsd_required;
+
+    -- П.3: Форматно-логический контроль → StateId = 92
+    DBMS_OUTPUT.PUT_LINE('[ П.3 IMG_8022 ] Форматно-логический контроль');
+    check_format_logic;
+
+    -- П.4: Проверка дублей → StateId = 94
+    DBMS_OUTPUT.PUT_LINE('[ П.4 IMG_8022 ] Проверка дублей');
+    check_duplicates;
+
+    -- П.5: Идентификационные реквизиты должника → RestrictionAnswerType = 05
+    DBMS_OUTPUT.PUT_LINE('[ П.5 IMG_8022 ] Идентификационные реквизиты должника');
+    check_debtor_id;
+
+    -- ================================================================
+    -- Специфические проверки по DocType (IMG_8019, 8020, 8021)
+    -- ================================================================
+    DBMS_OUTPUT.PUT_LINE('[ Шаг 6 ] Специфические проверки по DocType=' || v_doc_type);
+
+    CASE v_doc_type
+        WHEN 'O_IP_ACT_FIND_ACCOUNT'      THEN add_info('Тип 1: доп. проверки не требуются');
+        WHEN 'O_IP_ACT_ARREST_ACCMONEY'   THEN check_limit_sum; check_availability_acc;
+        WHEN 'O_IP_ACT_ENDARREST'         THEN check_ip_docs_info;
+        WHEN 'O_IP_ACT_ENDARR_NO_CHANGE'  THEN check_ip_docs_info; check_availability_acc; check_limit_sum;
+        WHEN 'O_IP_ACT_GACCOUNT_MONEY'    THEN check_limit_sum; check_availability_acc;
+        WHEN 'O_IP_ACT_CURRENCY_ROUB'     THEN check_limit_sum; check_availability_acc;
+        WHEN 'O_IP_ACT_ENDARR_GMONEY'     THEN check_limit_sum; check_ip_docs_info; check_availability_acc;
+        WHEN 'O_IP_ACT_ENDGACCOUNT_MONEY' THEN
+            v_val := get_xml_val(v_xml, 'string(/Restrictn/RestrDocId)');
+            IF v_val IS NULL THEN
+                v_error_count := v_error_count+1;
+                v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                    ||RPAD('Restrictn',38)||' | RestrDocId — отсутствует'||CHR(10);
+            ELSE add_info('RestrDocId = '||v_val); END IF;
+        WHEN 'O_IP_ACT_EXECUTE'           THEN check_osp_property;
+        WHEN 'O_IP_ACT_LIVING_WAGE'       THEN check_living_wage(TRUE);
+        WHEN 'O_IP_ACT_CHNG_LIVING_WAGE'  THEN check_living_wage(TRUE);
+        WHEN 'O_IP_ACT_END_LIVING_WAGE'   THEN check_living_wage(FALSE);
+        ELSE
+            v_error_count := v_error_count+1;
+            v_errors := v_errors||'  ['||LPAD(v_error_count,2,'0')||'] '
+                ||RPAD('DocType',38)||' | Неизвестный тип: "'
+                ||NVL(v_doc_type,'NULL')||'"'||CHR(10);
+    END CASE;
+
+    -- ================================================================
+    -- Итог
+    -- ================================================================
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+    IF v_error_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('  РЕЗУЛЬТАТ: ОК — все проверки пройдены.');
+        DBMS_OUTPUT.PUT_LINE('  Статус квитанции: DocumentStateReceipt не требуется.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('  РЕЗУЛЬТАТ: ОШИБКА (' || v_error_count || ' шт.):');
+        DBMS_OUTPUT.PUT_LINE('');
+        DBMS_OUTPUT.PUT_LINE(v_errors);
+        DBMS_OUTPUT.PUT_LINE('  Статус уведомления: RestrictionAnswerType = 05');
+        DBMS_OUTPUT.PUT_LINE('  (Постановление не исполнено: некорректное/противоречивое содержание)');
+    END IF;
+    IF v_info IS NOT NULL THEN
+        DBMS_OUTPUT.PUT_LINE('');
+        DBMS_OUTPUT.PUT_LINE('  Извлечённые значения:');
+        DBMS_OUTPUT.PUT_LINE(v_info);
+    END IF;
+    DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+
+EXCEPTION
+    -- IMG_8022 пп.1-4: критические ошибки — формируем квитанцию и выходим
+    WHEN e_stop_validation THEN
+        DBMS_OUTPUT.PUT_LINE('');
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+        DBMS_OUTPUT.PUT_LINE('  КВИТАНЦИЯ DocumentStateReceipt сформирована:');
+        DBMS_OUTPUT.PUT_LINE('  StateId  : ' || v_receipt_status);
+        DBMS_OUTPUT.PUT_LINE('  Сообщение: ' || v_receipt_message);
+        DBMS_OUTPUT.PUT_LINE('  Дальнейшая обработка ПРЕКРАЩЕНА.');
+        IF v_info IS NOT NULL THEN
+            DBMS_OUTPUT.PUT_LINE('');
+            DBMS_OUTPUT.PUT_LINE('  Выполненные проверки:');
+            DBMS_OUTPUT.PUT_LINE(v_info);
+        END IF;
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+
+    WHEN e_not_found THEN
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+        DBMS_OUTPUT.PUT_LINE('  ОШИБКА: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('  Статус: RestrictionAnswerType = 07');
+        DBMS_OUTPUT.PUT_LINE('  (Постановление не исполнено: лицо отсутствует в учёте)');
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+        DBMS_OUTPUT.PUT_LINE('  НЕПРЕДВИДЕННАЯ ОШИБКА: ' || SQLCODE || ' / ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('══════════════════════════════════════════════════════════════');
+        RAISE;
+
+END validate_xml_by_doctype;
+/
+
+-- ================================================================
+-- Пример вызова:
+--   SET SERVEROUTPUT ON SIZE UNLIMITED;
+--   BEGIN validate_xml_by_doctype('77001/24/123456'); END;
+--   /
+-- ================================================================
