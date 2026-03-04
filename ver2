@@ -1,0 +1,162 @@
+  <Report>
+        <ExternalKey>BANK-REP-2026-0001</ExternalKey>
+        <RestrictInternalKey>FSSP-2026-000001</RestrictInternalKey>
+        <IpInternalKey>IP-2026-00001</IpInternalKey>
+
+        <DocDate>2026-03-04</DocDate>
+        <DocNumber>REP-45-2026</DocNumber>
+
+        <RestrDocDate>2026-02-28</RestrDocDate>
+        <RestrDocNumber>123-Р</RestrDocNumber>
+
+        <!-- 3 = исполнено -->
+        <RestrictionAnswerType>3</RestrictionAnswerType>
+
+        <LegalImpossibility></LegalImpossibility>
+
+        <RestrictedAmountRub>150000.00</RestrictedAmountRub>
+
+        <RestrictData>
+            <ArrestRecoveryAmountData>
+                <ArrestedAmount>150000.00</ArrestedAmount>
+                <RecoveredAmount>150000.00</RecoveredAmount>
+                <OperationDate>2026-03-04</OperationDate>
+            </ArrestRecoveryAmountData>
+        </RestrictData>
+
+        <NonRestrictedData>
+            <Comment>Ограничения отсутствуют</Comment>
+        </NonRestrictedData>
+
+        <WageRetention>
+            <SDGroupPopulation>1</SDGroupPopulation>
+            <OrderLivingWageAcc>40817810000000001234</OrderLivingWageAcc>
+            <BankName>ПАО Сбербанк</BankName>
+            <BankBIK>044525225</BankBIK>
+            <Region>770</Region>
+        </WageRetention>
+
+        <Income>
+            <Incomepart>15000.00</Incomepart>
+            <!-- 1 — твердая сумма ежемесячно -->
+            <IncomepartName>1</IncomepartName>
+            <IncomepartNameStr>Твердая сумма ежемесячно</IncomepartNameStr>
+        </Income>
+
+        <Attachment>
+            <FileName>payment_order_45.pdf</FileName>
+            <FileDescription>Платежное поручение</FileDescription>
+        </Attachment>
+
+    </Report>
+
+CREATE OR REPLACE PROCEDURE CHECK_FSSP_XML (
+    p_doc_number IN VARCHAR2,
+    p_result OUT VARCHAR2
+)
+IS
+    v_xml        XMLTYPE;
+    v_count      NUMBER;
+    v_missing    VARCHAR2(4000) := '';
+    
+    -- функция проверки наличия тега
+    FUNCTION tag_exists(p_xpath VARCHAR2) RETURN BOOLEAN IS
+        v_cnt NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO v_cnt
+        FROM DUAL
+        WHERE XMLExists(p_xpath PASSING v_xml);
+
+        RETURN v_cnt > 0;
+    END;
+
+BEGIN
+    -- 1. Получаем XML
+    BEGIN
+        SELECT XML_DATA
+        INTO v_xml
+        FROM POSTANOVLENIA
+        WHERE DOC_NUMBER = p_doc_number;
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            p_result := 'Ошибка: Постановление № ' || p_doc_number || ' не найдено';
+            RETURN;
+    END;
+
+    -- 2. Проверка обязательных полей Restrict
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/InternalKey') THEN
+        v_missing := v_missing || 'InternalKey, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/DocDate') THEN
+        v_missing := v_missing || 'Restrict.DocDate, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/DocNum') THEN
+        v_missing := v_missing || 'DocNum, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/DocCode') THEN
+        v_missing := v_missing || 'DocCode, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/IP') THEN
+        v_missing := v_missing || 'IP, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/Data/IdentificationData') THEN
+        v_missing := v_missing || 'IdentificationData, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/Data/accountDatum') THEN
+        v_missing := v_missing || 'accountDatum, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Restrict/Data/AvailabilityAccData') THEN
+        v_missing := v_missing || 'AvailabilityAccData, ';
+    END IF;
+
+
+    -- 3. Проверка обязательных полей Report
+
+    IF NOT tag_exists('/ExchangePackage/Report/ExternalKey') THEN
+        v_missing := v_missing || 'ExternalKey, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Report/RestrictInternalKey') THEN
+        v_missing := v_missing || 'RestrictInternalKey, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Report/IpInternalKey') THEN
+        v_missing := v_missing || 'IpInternalKey, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Report/DocDate') THEN
+        v_missing := v_missing || 'Report.DocDate, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Report/RestrictionAnswerType') THEN
+        v_missing := v_missing || 'RestrictionAnswerType, ';
+    END IF;
+
+    IF NOT tag_exists('/ExchangePackage/Report/RestrictData/ArrestRecoveryAmountData') THEN
+        v_missing := v_missing || 'ArrestRecoveryAmountData, ';
+    END IF;
+
+
+    -- 4. Итог
+
+    IF v_missing IS NOT NULL AND LENGTH(v_missing) > 0 THEN
+        p_result := 'Ошибка. Отсутствуют поля: ' || RTRIM(v_missing, ', ');
+    ELSE
+        p_result := 'Проверка успешно завершена. Все обязательные поля присутствуют.';
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        p_result := 'Ошибка выполнения проверки: ' || SQLERRM;
+END CHECK_FSSP_XML;
+/
