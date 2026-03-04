@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Report>
+
+  <!-- 1. Report — ЭД «Уведомление об исполнении». Корневой элемент | Обяз.: + -->
+
+  <!-- 2. ExternalKey — Идентификатор АИС ВК.
+          Присваивается объекту ИС Банка | Строка(60) | Обяз.: + -->
+  <ExternalKey>SBER-AIS-VK-REPORT-2024-00456789</ExternalKey>
+
+  <!-- 3. RestrctnInternalKey — Ключ постановления к исполнению ФССП России
+          Уникальный идентификатор | Обяз.: + -->
+  <RestrctnInternalKey>4567890123456789</RestrctnInternalKey>
+
+  <!-- 4. IpInternalKey — Ключ ИП ФССП России
+          Уникальный идентификатор | Обяз.: + -->
+  <IpInternalKey>1234567890123456</IpInternalKey>
+
+  <!-- 5. DocDate — Дата уведомления | Дата | Обяз.: + -->
+  <DocDate>2024-03-16</DocDate>
+
+  <!-- 6. DocNumber — Номер уведомления | Строка(25) | Обяз.: - -->
+  <DocNumber>SBER-RPT-2024-007891</DocNumber>
+
+  <!-- 7. RestrDocDate — Дата постановления к исполнению | Дата | Обяз.: - -->
+  <RestrDocDate>2024-03-15</RestrDocDate>
+
+  <!-- 8. RestrDocNumber — Электронный номер постановления к исполнению
+          Строка(25) | Обяз.: - -->
+  <RestrDocNumber>77001/24/RD-00789</RestrDocNumber>
+
+  <!-- 9. RestrictionAnswerType — Тип ответа | Строка(2) | Обяз.: +
+            2 — не исполнено по иным причинам
+            3 — исполнено
+            4 — исполнено частично
+            5 — не исполнено: некорректное/противоречивое содержание
+            6 — не исполнено: отсутствует ограничение/арест для отмены
+            7 — не исполнено: лицо/объект отсутствует в учёте
+            8 — не исполнено: требование уже исполнено ранее
+           12 — не исполнено: невозможно идентифицировать лицо -->
+  <RestrictionAnswerType>04</RestrictionAnswerType>
+  <!-- 04 = Постановление исполнено частично:
+       на счёте недостаточно средств для полного погашения суммы взыскания -->
+
+  <!-- 10. LegalImpossibility — Причины невозможности исполнения | Строка(4000) | Обяз.: -
+           (!) Для СМЭВ3/ЛИЭВ используются первые 50 символов -->
+  <LegalImpossibility>На счёте должника недостаточно денежных средств для исполнения постановления в полном объёме. Списана фактически имеющаяся сумма с учётом сохранения прожиточного минимума согласно ст. 99 Федерального закона № 229-ФЗ.</LegalImpossibility>
+
+  <!-- 11. RestrictedAmountRub — Общая сумма ареста/взыскания в рублёвом эквиваленте
+           Число(15,2) | Обяз.: - -->
+  <RestrictedAmountRub>73450.75</RestrictedAmountRub>
+
+  <Data>
+
+    <!-- ── Табл. 15 — InformationType (служебные реквизиты записи сведений) ── -->
+    <InternalKey>5566778899001122</InternalKey>
+    <ExternalKey>AIS-VK-DATA-2024-00001</ExternalKey>
+    <OwnerInternalKey>1234567890123456</OwnerInternalKey>
+    <OwnerExternalKey>AIS-VK-2024-00456789</OwnerExternalKey>
+    <!-- ActDate: дата актуальности сведений | Обяз. для состава ЭД «Уведомление» -->
+    <ActDate>2024-03-16</ActDate>
+    <!-- KindData: 95 — Сведения об арестованных и взысканных средствах
+         Обяз. для сведений в составе ЭД «Уведомление об исполнении» -->
+    <KindData>95</KindData>
+    <DebtorName>Петров Алексей Владимирович</DebtorName>
+
+    <!-- ── Табл. 16 — IdentificationDataType (Сведения о ДУЛ) ── -->
+    <IdentificationData>
+      <TypeDoc>21</TypeDoc>       <!-- 21 = Паспорт гражданина РФ | Обяз.: + -->
+      <NameDoc>Паспорт гражданина Российской Федерации</NameDoc>
+      <SerDoc>45 12</SerDoc>
+      <NumDoc>345678</NumDoc>     <!-- Номер документа | Обяз.: + -->
+      <IssuedDoc>Отделом МВД России по Преображенскому району г. Москвы</IssuedDoc>
+      <DateDoc>2010-07-15</DateDoc>
+      <CodeDep>770-045</CodeDep>
+      <FIODoc>
+        <!-- Табл. 13 — FioType -->
+        <Surname>Петров</Surname>           <!-- Обяз.: + -->
+        <FirstName>Алексей</FirstName>      <!-- Обяз.: + -->
+        <Patronymic>Владимирович</Patronymic>
+      </FIODoc>
+      <birthDate>1985-06-22</birthDate>
+      <birthPlace>г. Москва</birthPlace>
+      <isValid>true</isValid>
+      <invalidateReasonCode/>
+      <INN>771234567890</INN>
+      <gender>М</gender>
+      <countryCode>643</countryCode>
+      <StrAddr>107258, г. Москва, ул. Открытое шоссе, д. 17, кв. 34</StrAddr>
+    </IdentificationData>
+
+    <!-- ── Табл. 17 — AccountDatumType (Сведения о счёте) ── -->
+    <accountDatum>
+      <Acc>40817810123456789012</Acc>       <!-- Счёт | Обяз.: + -->
+      <BicBank>044525225</BicBank>          <!-- БИК  | Обяз.: + -->
+      <bankORGN>1027700132195</bankORGN>
+      <bankINN>7707083893</bankINN>
+      <bankKPP>773601001</bankKPP>
+      <contractNumber>КД-2021-00123</contractNumber>
+      <contractStartDate>2021-03-15</contractStartDate>
+      <contractFinDate>2026-03-15</contractFinDate>
+      <accountKindCode>01</accountKindCode>
+      <accountKindName>Текущий счёт физического лица</accountKindName>
+      <AccOld/>
+      <!-- 2 — сохранение прожиточного минимума на основании постановления СПИ -->
+      <ArrestSaved>2</ArrestSaved>
+    </accountDatum>
+
+    <!-- ── Табл. 18 — AvailabilityAccDataType (Сведения о наличии ДС на счёте) ── -->
+    <AvailabilityAccData>
+      <!-- Остаток ПОСЛЕ частичного списания -->
+      <Summa>125000.00</Summa>
+      <CurrencyCode>RUB</CurrencyCode>
+      <SummaInfo>Остаток на счёте после частичного списания в счёт погашения долга</SummaInfo>
+      <DeptCode>7700</DeptCode>
+    </AvailabilityAccData>
+
+    <!-- ── Табл. 20 — AccountEncumbranceDatumType (Аресты и обременения) ── -->
+    <AccountEncumbranceDatumType>
+      <!-- 2 — ФССП России | Обяз.: + -->
+      <EncumbranceOrg>2</EncumbranceOrg>
+      <!-- Остаток неисполненной суммы ареста после частичного списания -->
+      <Amount>51549.75</Amount>
+      <AmountRub>51549.75</AmountRub>
+      <Date>2024-03-15</Date>             <!-- Дата ареста/обременения | Обяз.: + -->
+      <Priority>1</Priority>
+      <IPNumber>77001/24/123456</IPNumber>
+      <DocNumber>77001/24/RD-00789</DocNumber>
+      <OSPCode>77001</OSPCode>
+      <EncumbranceOrgINN/>
+    </AccountEncumbranceDatumType>
+
+  </Data>
+
+  <RestrictedData>
+
+    <!-- ── Табл. 19 — ArrestRecoveryAmountData | Обяз.: + ── -->
+    <ArrestRecoveryAmountData>
+
+      <!-- Базовый тип: AccountDatumType (Табл. 17) -->
+      <Acc>40817810123456789012</Acc>
+      <BicBank>044525225</BicBank>
+      <bankORGN>1027700132195</bankORGN>
+      <bankINN>7707083893</bankINN>
+      <bankKPP>773601001</bankKPP>
+      <contractNumber>КД-2021-00123</contractNumber>
+      <contractStartDate>2021-03-15</contractStartDate>
+      <contractFinDate>2026-03-15</contractFinDate>
+      <accountKindCode>01</accountKindCode>
+      <accountKindName>Текущий счёт физического лица</accountKindName>
+      <AccOld/>
+      <ArrestSaved>2</ArrestSaved>
+
+      <!-- Табл. 19 — собственные поля ArrestRecoveryAmountDataType -->
+
+      <!-- Сумма ареста в валюте счёта (фактически арестовано) -->
+      <ArrestAmount>73450.75</ArrestAmount>
+      <!-- Сумма ареста в рублях -->
+      <ArrestAmountRub>73450.75</ArrestAmountRub>
+      <!-- Сумма взыскания в валюте счёта (фактически списано) -->
+      <RecoveryAmount>73450.75</RecoveryAmount>
+      <!-- Сумма взыскания в рублях -->
+      <RecoveryAmountRub>73450.75</RecoveryAmountRub>
+      <!-- Статус ареста и взыскания согласно Приложению 2 -->
+      <ArrestRecoveryState>02</ArrestRecoveryState>
+      <!-- 02 — частичное взыскание выполнено -->
+
+    </ArrestRecoveryAmountData>
+
+  </RestrictedData>
+
+  <NonRestrictedData>
+
+    <!-- ── Табл. 19 — ArrestRecoveryAmountData | Обяз.: + ── -->
+    <ArrestRecoveryAmountData>
+
+      <!-- Базовый тип: AccountDatumType (Табл. 17) -->
+      <Acc>40817810123456789012</Acc>
+      <BicBank>044525225</BicBank>
+      <bankORGN>1027700132195</bankORGN>
+      <bankINN>7707083893</bankINN>
+      <bankKPP>773601001</bankKPP>
+      <contractNumber>КД-2021-00123</contractNumber>
+      <contractStartDate>2021-03-15</contractStartDate>
+      <contractFinDate>2026-03-15</contractFinDate>
+      <accountKindCode>01</accountKindCode>
+      <accountKindName>Текущий счёт физического лица</accountKindName>
+      <AccOld/>
+      <ArrestSaved>2</ArrestSaved>
+
+      <!-- Табл. 19 — собственные поля ArrestRecoveryAmountDataType -->
+
+      <!-- Неисполненная сумма ареста (остаток долга после частичного списания) -->
+      <ArrestAmount>51549.75</ArrestAmount>
+      <ArrestAmountRub>51549.75</ArrestAmountRub>
+      <!-- Взыскание по неисполненной части = 0,
+           т.к. средств на счёте не хватило -->
+      <RecoveryAmount>0.00</RecoveryAmount>
+      <RecoveryAmountRub>0.00</RecoveryAmountRub>
+      <!-- Статус: арест наложен, взыскание невозможно из-за нехватки средств -->
+      <ArrestRecoveryState>05</ArrestRecoveryState>
+      <!-- 05 — арест наложен, взыскание не произведено -->
+
+    </ArrestRecoveryAmountData>
+
+  </NonRestrictedData>
+
+</Report>
